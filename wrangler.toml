@@ -1,11 +1,3 @@
 name = "nanomd"
 compatibility_date = "2024-12-01"
 pages_build_output_dir = "./dist"
-
-[[kv_namespaces]]
-binding = "SHARED_CONTENT"
-id = "YOUR_KV_NAMESPACE_ID"
-# Create your KV namespace: wrangler kv:namespace create SHARED_CONTENT
-
-[ai]
-binding = "AI"
