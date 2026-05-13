@@ -170,7 +170,7 @@ export const ReviewTable: React.FC<ReviewTableProps> = ({ headers, rows }) => {
         });
     }, []);
 
-    // Build copy text: # + item (← recommendation) + decision (skip empty and separators)
+    // Build copy text: header + # + item (← recommendation) + decision (skip empty and separators)
     const buildCopyText = useCallback(() => {
         const lines: string[] = [];
         for (let i = 0; i < rows.length; i++) {
@@ -194,7 +194,16 @@ export const ReviewTable: React.FC<ReviewTableProps> = ({ headers, rows }) => {
 
             lines.push(`${itemNum}. ${mergedItem} → ${decision}`);
         }
-        return lines.join('\n');
+        if (lines.length === 0) return '';
+        const header = [
+            '✅ NanoMD Review — my decisions:',
+            '',
+            ...lines,
+            '',
+            '---',
+            'Save these decisions in the review file and proceed with the required action.',
+        ];
+        return header.join('\n');
     }, [rows, decisions, itemColIndex, separatorFlags, hasRecommendationCol, recommendationColIndex]);
 
     // Handle copy
