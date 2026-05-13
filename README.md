@@ -7,7 +7,7 @@
 
   *A fast, clean Arabic-first Markdown editor*
 
-  [![Live Demo](https://img.shields.io/badge/🚀_جرب_الآن-Live_Demo-3B82F6?style=for-the-badge)](https://nanomd.alfares-acelab.workers.dev/)
+  [![Live Demo](https://img.shields.io/badge/🚀_جرب_الآن-Live_Demo-3B82F6?style=for-the-badge)](https://nanomd.pages.dev/)
   [![Version](https://img.shields.io/badge/version-1.7.1-blue?style=flat-square)](changelog.md)
   [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
   [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)](https://react.dev)
