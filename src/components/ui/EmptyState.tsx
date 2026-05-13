@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { htmlToMarkdown, plainTextSmartConvert } from '../../utils/htmlToMarkdown';
 import { Logo } from './Logo';
 import { FeatureCardsGrid } from './FeatureCardsGrid';
@@ -183,12 +184,15 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
                     }
                 }}
             />
-            <Toast
-                message={toast?.message ?? ''}
-                type={toast?.type}
-                isVisible={!!toast}
-                onClose={() => setToast(null)}
-            />
+            {createPortal(
+                <Toast
+                    message={toast?.message ?? ''}
+                    type={toast?.type}
+                    isVisible={!!toast}
+                    onClose={() => setToast(null)}
+                />,
+                document.body
+            )}
         </>
     );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Eye, Pencil, Columns2, Focus, ClipboardPaste, Copy, Trash2, Sun, Moon, HelpCircle, Upload, Printer, Share2, Loader2, History, Save, Sparkles } from 'lucide-react';
 import { useAppContext } from '../../contexts/AppContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -236,6 +237,7 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
     );
 
     return (
+        <>
         <header className="sticky top-0 z-40 w-full border-b border-border-default bg-bg-primary/70 backdrop-blur-[20px] transition-all duration-300">
             {/* Hidden file input for upload functionality */}
             <input ref={fileInputRef} type="file" accept=".md,.txt,.markdown" onChange={handleFileUpload} className="hidden" />
@@ -398,12 +400,16 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
                 onClose={() => setShowHelpModal(false)}
             />
 
+        </header>
+        {createPortal(
             <Toast
                 message={toast?.message ?? ''}
                 type={toast?.type}
                 isVisible={!!toast}
                 onClose={() => setToast(null)}
-            />
-        </header>
+            />,
+            document.body
+        )}
+        </>
     );
 };
