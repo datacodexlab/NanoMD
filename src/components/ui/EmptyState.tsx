@@ -21,6 +21,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
     // Handle manual paste from fallback textarea (Firefox / blocked clipboard API)
     const handlePasteAreaPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
         e.preventDefault();
+        // Stop useSmartPaste (window listener) from also processing this event
+        e.nativeEvent.stopImmediatePropagation();
         const html = e.clipboardData.getData('text/html');
         const plain = e.clipboardData.getData('text/plain');
         if (html) {
@@ -29,6 +31,43 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
             onSelectTemplate(plainTextSmartConvert(plain));
         }
         setShowPasteArea(false);
+    };
+
+    // Try clipboard API with feature detection — skips to modal on Firefox
+    const tryClipboardPaste = async (onSuccess: () => void = () => {}) => {
+        // Firefox doesn't support clipboard.read() — go straight to modal
+        if (!navigator.clipboard?.read) {
+            setShowPasteArea(true);
+            setTimeout(() => pasteAreaRef.current?.focus(), 50);
+            return;
+        }
+        try {
+            const clipboardItems = await navigator.clipboard.read();
+            for (const item of clipboardItems) {
+                if (item.types.includes('text/html')) {
+                    const blob = await item.getType('text/html');
+                    const html = await blob.text();
+                    if (html) { onSuccess(); onSelectTemplate(htmlToMarkdown(html)); return; }
+                }
+                if (item.types.includes('text/plain')) {
+                    const blob = await item.getType('text/plain');
+                    const text = await blob.text();
+                    if (text) { onSuccess(); onSelectTemplate(plainTextSmartConvert(text)); return; }
+                }
+            }
+        } catch {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    onSuccess();
+                    onSelectTemplate(plainTextSmartConvert(text));
+                    return;
+                }
+            } catch { /* fall through */ }
+        }
+        // All APIs failed or returned empty — show manual paste modal
+        setShowPasteArea(true);
+        setTimeout(() => pasteAreaRef.current?.focus(), 50);
     };
 
     // Handle file upload from disk
@@ -84,40 +123,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
 
                     {/* Hero Section */}
                     <button
-                        onClick={async () => {
-                            try {
-                                // Smart Paste: try HTML first, fallback to plain text
-                                const clipboardItems = await navigator.clipboard.read();
-                                for (const item of clipboardItems) {
-                                    if (item.types.includes('text/html')) {
-                                        const htmlBlob = await item.getType('text/html');
-                                        const html = await htmlBlob.text();
-                                        if (html) {
-                                            onSelectTemplate(htmlToMarkdown(html));
-                                            return;
-                                        }
-                                    }
-                                    if (item.types.includes('text/plain')) {
-                                        const textBlob = await item.getType('text/plain');
-                                        const text = await textBlob.text();
-                                        if (text) {
-                                            onSelectTemplate(plainTextSmartConvert(text));
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch {
-                                try {
-                                    const text = await navigator.clipboard.readText();
-                                    if (text) onSelectTemplate(plainTextSmartConvert(text));
-                                } catch {
-                                    // Clipboard API blocked (Firefox / strict permissions)
-                                    // Show paste area so user can Ctrl+V manually
-                                    setShowPasteArea(true);
-                                    setTimeout(() => pasteAreaRef.current?.focus(), 50);
-                                }
-                            }
-                        }}
+                        onClick={() => tryClipboardPaste()}
                         className="relative group flex flex-col items-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 hover:scale-[1.02] transition-all cursor-pointer focus:outline-none select-none"
                         aria-label="ألصق نص الـ AI هنا"
                     >
@@ -163,43 +169,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
             <ReviewModeGuide
                 isOpen={isReviewGuideOpen}
                 onClose={() => setIsReviewGuideOpen(false)}
-                onPaste={async () => {
-                    try {
-                        const clipboardItems = await navigator.clipboard.read();
-                        for (const item of clipboardItems) {
-                            if (item.types.includes('text/html')) {
-                                const htmlBlob = await item.getType('text/html');
-                                const html = await htmlBlob.text();
-                                if (html) {
-                                    setIsReviewGuideOpen(false);
-                                    onSelectTemplate(htmlToMarkdown(html));
-                                    return;
-                                }
-                            }
-                            if (item.types.includes('text/plain')) {
-                                const textBlob = await item.getType('text/plain');
-                                const text = await textBlob.text();
-                                if (text) {
-                                    setIsReviewGuideOpen(false);
-                                    onSelectTemplate(plainTextSmartConvert(text));
-                                    return;
-                                }
-                            }
-                        }
-                    } catch {
-                        try {
-                            const text = await navigator.clipboard.readText();
-                            if (text) {
-                                setIsReviewGuideOpen(false);
-                                onSelectTemplate(plainTextSmartConvert(text));
-                            }
-                        } catch {
-                            setIsReviewGuideOpen(false);
-                            setShowPasteArea(true);
-                            setTimeout(() => pasteAreaRef.current?.focus(), 50);
-                        }
-                    }
-                }}
+                onPaste={() => tryClipboardPaste(() => setIsReviewGuideOpen(false))}
             />
             {/* Fallback paste area for Firefox / blocked clipboard API */}
             {showPasteArea && createPortal(
