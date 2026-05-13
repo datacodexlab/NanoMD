@@ -7,6 +7,7 @@ import { ViewMode } from '../../types';
 import { ShareHistory } from '../ui/ShareHistory';
 import { WhatsNewModal } from '../ui/WhatsNewModal';
 import { HelpAboutModal } from '../ui/HelpAboutModal';
+import { Toast } from '../ui/Toast';
 
 interface HeaderProps {
     hasContent?: boolean;
@@ -22,6 +23,8 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [showWhatsNewModal, setShowWhatsNewModal] = useState(false);
     const [showHelpModal, setShowHelpModal] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
+    const showToast = (message: string, type: 'success' | 'error' | 'warning' = 'success') => setToast({ message, type });
 
     const handleLocalSave = () => {
         if (!appState.content.trim()) return;
@@ -42,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
         
         localStorage.setItem('nano_share_history', JSON.stringify(newHistory));
         
-        alert('تم حفظ المسودة محلياً في السجل بنجاح! 💾');
+        showToast('تم حفظ المسودة محلياً في السجل');
     };
 
     const handleShare = async () => {
@@ -72,13 +75,13 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
                 }, ...history].slice(0, 10);
                 localStorage.setItem('nano_share_history', JSON.stringify(newHistory));
                 
-                alert('تم إنشاء رابط المشاركة ونسخه للحافظة بنجاح! 🔗');
+                showToast('تم إنشاء رابط المشاركة ونسخه للحافظة');
             } else {
-                alert(data.error || 'فشل إنشاء رابط المشاركة ❌');
+                showToast(data.error || 'فشل إنشاء رابط المشاركة', 'error');
             }
         } catch (err) {
             console.error('Share error:', err);
-            alert('حدث خطأ أثناء الاتصال بالخادم ❌');
+            showToast('حدث خطأ أثناء الاتصال بالخادم', 'error');
         } finally {
             setIsSharing(false);
         }
@@ -390,9 +393,16 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
             />
 
             {/* Help / About Modal */}
-            <HelpAboutModal 
-                isOpen={showHelpModal} 
-                onClose={() => setShowHelpModal(false)} 
+            <HelpAboutModal
+                isOpen={showHelpModal}
+                onClose={() => setShowHelpModal(false)}
+            />
+
+            <Toast
+                message={toast?.message ?? ''}
+                type={toast?.type}
+                isVisible={!!toast}
+                onClose={() => setToast(null)}
             />
         </header>
     );

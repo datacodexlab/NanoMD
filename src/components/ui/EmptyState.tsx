@@ -3,6 +3,7 @@ import { htmlToMarkdown, plainTextSmartConvert } from '../../utils/htmlToMarkdow
 import { Logo } from './Logo';
 import { FeatureCardsGrid } from './FeatureCardsGrid';
 import { ReviewModeGuide } from './ReviewModeGuide';
+import { Toast } from './Toast';
 
 interface EmptyStateProps {
     onSelectTemplate: (content: string) => void;
@@ -12,6 +13,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const [isReviewGuideOpen, setIsReviewGuideOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
+    const showToast = (message: string, type: 'success' | 'error' | 'warning' = 'warning') => setToast({ message, type });
 
     // Handle file upload from disk
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +97,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
                                     if (text) onSelectTemplate(plainTextSmartConvert(text));
                                 } catch (e) {
                                     console.error('Failed to read clipboard', e);
-                                    alert('عفواً، يرجى إعطاء صلاحية لصق المحتوى أو استخدام Ctrl+V');
+                                    showToast('يرجى إعطاء صلاحية اللصق أو استخدام Ctrl+V');
                                 }
                             }
                         }}
@@ -140,8 +143,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
                 <FeatureCardsGrid onReviewModeClick={() => setIsReviewGuideOpen(true)} />
             </div>
 
-            <ReviewModeGuide 
-                isOpen={isReviewGuideOpen} 
+            <ReviewModeGuide
+                isOpen={isReviewGuideOpen}
                 onClose={() => setIsReviewGuideOpen(false)}
                 onPaste={async () => {
                     try {
@@ -175,10 +178,16 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
                             }
                         } catch (e) {
                             console.error('Failed to read clipboard', e);
-                            alert('\u0639\u0641\u0648\u0627\u064b\u060c \u064a\u0631\u062c\u0649 \u0625\u0639\u0637\u0627\u0621 \u0635\u0644\u0627\u062d\u064a\u0629 \u0644\u0635\u0642 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0623\u0648 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 Ctrl+V');
+                            showToast('\u064a\u0631\u062c\u0649 \u0625\u0639\u0637\u0627\u0621 \u0635\u0644\u0627\u062d\u064a\u0629 \u0627\u0644\u0644\u0635\u0642 \u0623\u0648 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 Ctrl+V');
                         }
                     }
                 }}
+            />
+            <Toast
+                message={toast?.message ?? ''}
+                type={toast?.type}
+                isVisible={!!toast}
+                onClose={() => setToast(null)}
             />
         </>
     );

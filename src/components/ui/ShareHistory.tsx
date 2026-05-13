@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { History, X, Trash2, ExternalLink, Copy } from 'lucide-react';
+import { Toast } from './Toast';
 
 export interface ShareHistoryItem {
     id: string;
@@ -20,6 +21,8 @@ interface ShareHistoryProps {
 
 export const ShareHistory: React.FC<ShareHistoryProps> = ({ onClose, onRestore }) => {
     const [history, setHistory] = useState<ShareHistoryItem[]>([]);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
+    const showToast = (message: string, type: 'success' | 'error' | 'warning' = 'success') => setToast({ message, type });
 
     useEffect(() => {
         const stored = JSON.parse(localStorage.getItem('nano_share_history') || '[]');
@@ -35,7 +38,7 @@ export const ShareHistory: React.FC<ShareHistoryProps> = ({ onClose, onRestore }
     const handleCopy = async (url: string) => {
         try {
             await navigator.clipboard.writeText(url);
-            alert('تم النسخ');
+            showToast('تم نسخ الرابط');
         } catch (err) {
             console.error('Failed to copy', err);
         }
@@ -46,7 +49,7 @@ export const ShareHistory: React.FC<ShareHistoryProps> = ({ onClose, onRestore }
         return Date.now() > expiresAt;
     };
 
-    return createPortal(
+    return <>{createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm print:hidden p-4" onClick={onClose}>
             <div className="bg-bg-primary rounded-2xl border border-border-default shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
                 {/* Header */}
@@ -112,7 +115,7 @@ export const ShareHistory: React.FC<ShareHistoryProps> = ({ onClose, onRestore }
                                                         if (item.fullContent) {
                                                             onRestore?.(item.fullContent);
                                                         } else {
-                                                            alert('تعذر استرجاع المحتوى. ربما يكون مسودة قديمة جداً.');
+                                                            showToast('تعذر استرجاع المحتوى. ربما مسودة قديمة جداً.', 'error');
                                                         }
                                                     }}
                                                     className="flex-1 flex justify-center items-center gap-1.5 text-xs bg-accent/10 hover:bg-accent/20 text-accent py-2 rounded-lg font-medium transition-colors"
@@ -155,5 +158,14 @@ export const ShareHistory: React.FC<ShareHistoryProps> = ({ onClose, onRestore }
             </div>
         </div>,
         document.body
-    );
+    )}{createPortal(
+        <Toast
+            message={toast?.message ?? ''}
+            type={toast?.type}
+            isVisible={!!toast}
+            onClose={() => setToast(null)}
+        />,
+        document.body
+    )}</>;
 };
+
