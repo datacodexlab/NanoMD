@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Sparkles, Wand2, ShieldCheck, Zap, Globe, History } from 'lucide-react';
+import { X, Sparkles, Wand2, ShieldCheck, Zap, Globe, History, Smartphone, Share2 } from 'lucide-react';
 
 interface WhatsNewModalProps {
     isOpen: boolean;
@@ -9,8 +9,35 @@ interface WhatsNewModalProps {
 
 const updates = [
     {
-        version: 'v1.7.1',
+        version: 'v1.8.0',
         isLatest: true,
+        title: 'الإطلاق العام — وضع المراجعة للموبايل وأكثر',
+        items: [
+            {
+                icon: <Smartphone className="w-5 h-5 text-accent-primary shrink-0 mt-0.5" />,
+                title: 'وضع المراجعة على الموبايل',
+                desc: 'كل بند في جدول المراجعة يظهر كبطاقة عمودية مستقلة، مع شريط تقدم ثابت وزر نسخ القرارات دائماً في متناول إبهامك.',
+            },
+            {
+                icon: <Share2 className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />,
+                title: 'رابط مراجعة للوكلاء',
+                desc: (<>وكلاء الذكاء الاصطناعي يرفعون مراجعاتهم عبر API ويرسلون رابطاً يفتح جدول المراجعة تفاعلياً مباشرة — بدون نسخ ولصق.</>),
+            },
+            {
+                icon: <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />,
+                title: 'بروتوكول Review Mode v3.0',
+                desc: 'بروتوكول كامل مُضمَّن في التطبيق — تفعيل، لغة، وثلاثة سيناريوهات عمل جاهزة للنسخ وإرسالها لأي نموذج AI.',
+            },
+            {
+                icon: <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />,
+                title: 'اللصق في Firefox وإصلاحات عامة',
+                desc: 'متصفحات لا تدعم Clipboard API (مثل Firefox) تعرض الآن نافذة لصق يدوي بدلاً من الصمت. كذلك إصلاح تلف النص العربي عند استرجاع المحتوى المشترك.',
+            },
+        ],
+    },
+    {
+        version: 'v1.7.1',
+        isLatest: false,
         title: 'إصلاحات RTL والأيقونة',
         items: [
             {
@@ -193,7 +220,7 @@ export const WhatsNewModal: React.FC<WhatsNewModalProps> = ({ isOpen, onClose })
                                 ما الجديد في NanoMD؟
                             </h2>
                             <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                إصدار v1.7.1 — اكتشف أحدث الميزات
+                                إصدار v1.8.0 — اكتشف أحدث الميزات
                             </p>
                         </div>
                     </div>

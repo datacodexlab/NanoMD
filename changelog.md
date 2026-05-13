@@ -1,5 +1,28 @@
 # 📝 سجل التغييرات (Changelog) - NanoMD
 
+## [v1.8.0] - 2026-05-13
+
+### أُضيف (Added)
+- **Review Link:** وكلاء الذكاء الاصطناعي يقدرون يرفعوا مراجعة كاملة لـ `/api/share` مع `mode: "review"` و `expiresIn` فيرجع رابط يفتح Review Mode مباشرة في NanoMD.
+- **بروتوكول Review Mode v3.0:** تحديث `ReviewModeGuide.tsx` ببروتوكول إنجليزي مضغوط يشمل ACTIVATION، LANGUAGE، TABLE FORMAT، WORKFLOW A/B/C، PROCESSING RESPONSES.
+- **رسالة القرارات التلقائية:** زر النسخ في Review Mode يُلحق header ثابت (`✅ NanoMD Review — my decisions:`) وتعليمات للوكيل تلقائياً.
+- **SEO كامل:** Open Graph، Twitter Card، Canonical، description، keywords في `index.html`.
+- **og-image.jpg:** صورة مشاركة اجتماعية (1200×630، 46KB) لـ WhatsApp وتويتر.
+- **GitHub Issue Templates:** قالبَي `bug_report.md` و `feature_request.md` في `.github/ISSUE_TEMPLATE/`.
+- **Review Mode موبايل — Card Layout:** على شاشات < 640px كل بند يُعرَض كبطاقة عمودية مستقلة بدل جدول أفقي. أزرار القرار بحجم 44px، input يتوسع تلقائياً، progress bar sticky في الأعلى، زر النسخ sticky في الأسفل.
+- **Fallback اللصق لـ Firefox:** عند حجب Clipboard API يظهر modal مع textarea — المستخدم يلصق بـ Ctrl+V بدل ظهور رسالة خطأ.
+
+### أُصلح (Fixed)
+- **بق `tryRepairEncoding`:** الحروف العربية (U+0600–U+067F) كانت تُفسَد عند المعالجة — إضافة guard يرجع النص كما هو لو أي حرف > U+00FF.
+- **Toast شفاف:** استبدال `rgba(x,0.18)` بـ `color-mix(solid 14%, var(--bg-primary))` — الإشعار معتم دايماً بلون الثيم.
+- **زر النسخ والـ progress bar على الموبايل:** `position:fixed` كان يفشل داخل `overflow-y:auto` — تحويل لـ `position:sticky` يعمل صح في scroll containers.
+- **og-image:** تصغير من 1731×909 PNG (1MB) إلى 1200×630 JPEG (46KB) ضمن حد WhatsApp.
+
+### تم التعديل (Changed)
+- **عنوان الصفحة:** امتداد من 45 إلى 55 حرف لتحسين الـ SEO.
+- **Sample Table في Guide:** تحديث لـ 5-column format مع review header block.
+- **TTL المشاركة:** الافتراضي 30 يوم، Review Links 24 ساعة.
+
 ## [v1.7.1] - 2026-05-12
 
 ### أُصلح (Fixed)
