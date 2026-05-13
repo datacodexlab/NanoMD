@@ -615,8 +615,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 10px;
-    padding-bottom: 80px;
+    padding: 8px 6px;
 }
 
 .review-card {
@@ -669,15 +668,19 @@
 .review-card-rec {
     font-size: 13px;
     color: var(--accent-primary);
-    padding-right: 30px;
+    padding: 4px 8px 4px 30px;
     line-height: 1.4;
+    background: color-mix(in srgb, var(--accent-primary) 6%, transparent);
+    border-radius: 6px;
 }
 
 .review-card-detail {
     font-size: 12px;
     color: var(--text-secondary);
-    padding-right: 30px;
+    padding: 4px 8px 4px 30px;
     line-height: 1.4;
+    background: color-mix(in srgb, var(--text-secondary) 5%, transparent);
+    border-radius: 6px;
 }
 
 .review-card-buttons {
@@ -708,23 +711,39 @@
     border: 1px solid color-mix(in srgb, var(--accent-primary) 25%, transparent);
 }
 
-.review-copy-bar-mobile {
-    position: fixed;
+/* Sticky progress bar — stays at top while scrolling on mobile */
+.review-progress-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-default);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Sticky copy bar — stays at bottom of scroll container on mobile */
+.review-copy-bar-sticky {
+    position: sticky;
     bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
+    z-index: 10;
     background: var(--bg-primary);
     border-top: 1px solid var(--border-default);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
-    padding: 10px 16px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.10);
     padding-bottom: max(10px, env(safe-area-inset-bottom));
 }
 
-.review-copy-bar-mobile .review-copy-btn {
+.review-copy-bar-sticky .review-copy-btn {
     width: 100%;
     padding: 13px 24px;
     font-size: 16px;
+}
+
+/* Auto-expanding textarea for decision input on mobile */
+.review-input-mobile {
+    resize: none;
+    overflow: hidden;
+    min-height: 40px;
+    line-height: 1.5;
 }
 
 @media (max-width: 639px) {

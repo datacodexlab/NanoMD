@@ -194,9 +194,9 @@ export const ReviewTable: React.FC<ReviewTableProps> = ({ headers, rows }) => {
 
     const progressPct = totalCount > 0 ? (reviewedCount / totalCount) * 100 : 0;
 
-    // ─── Progress bar (shared between both layouts) ───────────────────────────
-    const progressBar = (
-        <div className="review-progress">
+    // ─── Progress bar ─────────────────────────────────────────────────────────
+    const progressBar = (sticky = false) => (
+        <div className={`review-progress${sticky ? ' review-progress-sticky' : ''}`}>
             <div className="review-progress-bar">
                 <div className="review-progress-fill" style={{ width: `${progressPct}%` }} />
             </div>
@@ -206,7 +206,13 @@ export const ReviewTable: React.FC<ReviewTableProps> = ({ headers, rows }) => {
         </div>
     );
 
-    // ─── Decision cell content (shared helper) ────────────────────────────────
+    // ─── Auto-resize textarea helper ──────────────────────────────────────────
+    const autoResize = (el: HTMLTextAreaElement) => {
+        el.style.height = 'auto';
+        el.style.height = `${el.scrollHeight}px`;
+    };
+
+    // ─── Decision cell content ────────────────────────────────────────────────
     const decisionControls = (rowIdx: number, mobileBtns = false) => (
         <div className="review-decision-wrapper">
             <div className={`review-quick-buttons${mobileBtns ? ' review-card-buttons' : ''}`}>
@@ -223,14 +229,29 @@ export const ReviewTable: React.FC<ReviewTableProps> = ({ headers, rows }) => {
                 ))}
             </div>
             <div className="review-input-wrapper">
-                <input
-                    type="text"
-                    className="review-input"
-                    value={decisions[rowIdx] || ''}
-                    onChange={(e) => handleInputChange(rowIdx, e.target.value)}
-                    placeholder="اكتب قرارك..."
-                    dir="rtl"
-                />
+                {mobileBtns ? (
+                    <textarea
+                        className="review-input review-input-mobile"
+                        value={decisions[rowIdx] || ''}
+                        onChange={(e) => {
+                            handleInputChange(rowIdx, e.target.value);
+                            autoResize(e.target);
+                        }}
+                        onFocus={(e) => autoResize(e.target)}
+                        placeholder="اكتب قرارك..."
+                        dir="rtl"
+                        rows={1}
+                    />
+                ) : (
+                    <input
+                        type="text"
+                        className="review-input"
+                        value={decisions[rowIdx] || ''}
+                        onChange={(e) => handleInputChange(rowIdx, e.target.value)}
+                        placeholder="اكتب قرارك..."
+                        dir="rtl"
+                    />
+                )}
                 {decisions[rowIdx]?.trim() && (
                     <button
                         className="review-clear-btn"
@@ -251,11 +272,10 @@ export const ReviewTable: React.FC<ReviewTableProps> = ({ headers, rows }) => {
     if (isMobile) {
         return (
             <div className="review-table-container">
-                {progressBar}
+                {progressBar(true)}
 
                 <div className="review-cards">
                     {rows.map((row, rowIdx) => {
-                        // Separator
                         if (separatorFlags[rowIdx]) {
                             return (
                                 <div key={rowIdx} className="review-separator-divider">
@@ -293,8 +313,8 @@ export const ReviewTable: React.FC<ReviewTableProps> = ({ headers, rows }) => {
                     })}
                 </div>
 
-                {/* Fixed copy button */}
-                <div className="review-copy-bar review-copy-bar-mobile">
+                {/* Sticky copy button — stays at bottom of scroll container */}
+                <div className="review-copy-bar review-copy-bar-sticky">
                     <button
                         className={copyBtnClass}
                         onClick={handleCopy}
@@ -316,7 +336,7 @@ export const ReviewTable: React.FC<ReviewTableProps> = ({ headers, rows }) => {
 
     return (
         <div className="review-table-container">
-            {progressBar}
+            {progressBar()}
 
             <table className="review-table">
                 <thead>
