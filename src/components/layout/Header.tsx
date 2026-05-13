@@ -8,7 +8,7 @@ import { ViewMode } from '../../types';
 import { ShareHistory } from '../ui/ShareHistory';
 import { WhatsNewModal } from '../ui/WhatsNewModal';
 import { HelpAboutModal } from '../ui/HelpAboutModal';
-import { Toast } from '../ui/Toast';
+import { Toast, ToastAction } from '../ui/Toast';
 
 interface HeaderProps {
     hasContent?: boolean;
@@ -24,8 +24,8 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [showWhatsNewModal, setShowWhatsNewModal] = useState(false);
     const [showHelpModal, setShowHelpModal] = useState(false);
-    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
-    const showToast = (message: string, type: 'success' | 'error' | 'warning' = 'success') => setToast({ message, type });
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning'; action?: ToastAction } | null>(null);
+    const showToast = (message: string, type: 'success' | 'error' | 'warning' = 'success', action?: ToastAction) => setToast({ message, type, action });
 
     const handleLocalSave = () => {
         if (!appState.content.trim()) return;
@@ -76,7 +76,10 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
                 }, ...history].slice(0, 10);
                 localStorage.setItem('nano_share_history', JSON.stringify(newHistory));
                 
-                showToast('تم إنشاء رابط المشاركة ونسخه للحافظة');
+                showToast('تم نسخ رابط المشاركة', 'success', {
+                    label: 'فتح الرابط',
+                    onClick: () => window.open(shareUrl, '_blank'),
+                });
             } else {
                 showToast(data.error || 'فشل إنشاء رابط المشاركة', 'error');
             }
@@ -407,6 +410,7 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
                 type={toast?.type}
                 isVisible={!!toast}
                 onClose={() => setToast(null)}
+                action={toast?.action}
             />,
             document.body
         )}
