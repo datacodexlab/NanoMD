@@ -114,7 +114,7 @@ export const ScrollNav = () => {
                     {/* Translation Controls */}
                     <div className="flex flex-col gap-2 pb-2 mb-2 border-b border-border-default">
                         <button
-                            className={`scroll-nav-btn visible ${appState.useContextTranslation ? 'text-accent border-accent/50' : 'opacity-60'}`}
+                            className={`scroll-nav-btn visible ${appState.useContextTranslation ? 'ctx-active' : 'ctx-inactive'}`}
                             onClick={toggleContextTranslation}
                             disabled={translationState.isTranslating}
                             title="Context-aware translation"

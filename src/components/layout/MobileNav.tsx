@@ -60,11 +60,13 @@ const NavItem: React.FC<NavItemProps> = ({
         ? 'hover:text-amber-400'
         : 'hover:text-text-primary';
 
-    const pillBg = active
-        ? 'bg-accent/12 shadow-sm shadow-accent/20'
-        : amber
-            ? 'hover:bg-amber-500/10'
-            : 'hover:bg-bg-secondary/70';
+    const pillBg = amber
+        ? 'hover:bg-amber-500/10'
+        : 'hover:bg-bg-secondary/70';
+
+    const pillStyle = active
+        ? { background: 'color-mix(in srgb, var(--accent-primary) 15%, var(--bg-primary))' }
+        : {};
 
     return (
         <button
@@ -90,7 +92,7 @@ const NavItem: React.FC<NavItemProps> = ({
                 flex items-center justify-center
                 w-10 h-7 rounded-xl transition-all duration-200
                 ${pillBg}
-            `}>
+            `} style={pillStyle}>
                 {/* Active accent top-line indicator */}
                 {active && (
                     <span className="
