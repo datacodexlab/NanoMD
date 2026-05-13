@@ -17,32 +17,32 @@ interface ToastProps {
     action?: ToastAction;
 }
 
-const styles: Record<ToastType, { bg: string; border: string; shadow: string; icon: React.ReactNode; actionColor: string }> = {
+const styles: Record<ToastType, { solid: string; border: string; shadow: string; icon: React.ReactNode; actionColor: string }> = {
     success: {
-        bg: 'rgba(16,185,129,0.18)',
-        border: 'rgba(16,185,129,0.55)',
-        shadow: 'rgba(16,185,129,0.15)',
+        solid: '#10B981',
+        border: 'rgba(16,185,129,0.6)',
+        shadow: 'rgba(16,185,129,0.2)',
         icon: <CheckCircle2 size={18} style={{ color: '#10B981', flexShrink: 0 }} />,
         actionColor: '#10B981',
     },
     error: {
-        bg: 'rgba(239,68,68,0.18)',
-        border: 'rgba(239,68,68,0.55)',
-        shadow: 'rgba(239,68,68,0.15)',
+        solid: '#EF4444',
+        border: 'rgba(239,68,68,0.6)',
+        shadow: 'rgba(239,68,68,0.2)',
         icon: <XCircle size={18} style={{ color: '#EF4444', flexShrink: 0 }} />,
         actionColor: '#EF4444',
     },
     warning: {
-        bg: 'rgba(245,158,11,0.18)',
-        border: 'rgba(245,158,11,0.55)',
-        shadow: 'rgba(245,158,11,0.15)',
+        solid: '#F59E0B',
+        border: 'rgba(245,158,11,0.6)',
+        shadow: 'rgba(245,158,11,0.2)',
         icon: <AlertTriangle size={18} style={{ color: '#F59E0B', flexShrink: 0 }} />,
         actionColor: '#F59E0B',
     },
     info: {
-        bg: 'rgba(59,130,246,0.18)',
-        border: 'rgba(59,130,246,0.55)',
-        shadow: 'rgba(59,130,246,0.15)',
+        solid: '#3B82F6',
+        border: 'rgba(59,130,246,0.6)',
+        shadow: 'rgba(59,130,246,0.2)',
         icon: <Info size={18} style={{ color: '#3B82F6', flexShrink: 0 }} />,
         actionColor: '#3B82F6',
     },
@@ -89,10 +89,9 @@ export const Toast: React.FC<ToastProps> = ({
                 gap: '0.6rem',
                 padding: action ? '0.65rem 0.75rem 0.65rem 1rem' : '0.7rem 1.2rem',
                 borderRadius: '14px',
-                backgroundColor: s.bg,
+                backgroundColor: `color-mix(in srgb, ${s.solid} 14%, var(--bg-primary))`,
                 border: `1.5px solid ${s.border}`,
-                backdropFilter: 'blur(20px)',
-                boxShadow: `0 8px 30px ${s.shadow}, 0 2px 8px rgba(0,0,0,0.18)`,
+                boxShadow: `0 8px 30px ${s.shadow}, 0 2px 8px rgba(0,0,0,0.22)`,
                 fontSize: '0.88rem',
                 fontWeight: 600,
                 color: 'var(--text-primary)',

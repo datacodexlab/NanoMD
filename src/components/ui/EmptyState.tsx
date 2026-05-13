@@ -13,9 +13,23 @@ interface EmptyStateProps {
 export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const [isReviewGuideOpen, setIsReviewGuideOpen] = useState(false);
+    const [showPasteArea, setShowPasteArea] = useState(false);
+    const pasteAreaRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
-    const showToast = (message: string, type: 'success' | 'error' | 'warning' = 'warning') => setToast({ message, type });
+
+    // Handle manual paste from fallback textarea (Firefox / blocked clipboard API)
+    const handlePasteAreaPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        e.preventDefault();
+        const html = e.clipboardData.getData('text/html');
+        const plain = e.clipboardData.getData('text/plain');
+        if (html) {
+            onSelectTemplate(htmlToMarkdown(html));
+        } else if (plain) {
+            onSelectTemplate(plainTextSmartConvert(plain));
+        }
+        setShowPasteArea(false);
+    };
 
     // Handle file upload from disk
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,9 +110,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
                                 try {
                                     const text = await navigator.clipboard.readText();
                                     if (text) onSelectTemplate(plainTextSmartConvert(text));
-                                } catch (e) {
-                                    console.error('Failed to read clipboard', e);
-                                    showToast('يرجى إعطاء صلاحية اللصق أو استخدام Ctrl+V');
+                                } catch {
+                                    // Clipboard API blocked (Firefox / strict permissions)
+                                    // Show paste area so user can Ctrl+V manually
+                                    setShowPasteArea(true);
+                                    setTimeout(() => pasteAreaRef.current?.focus(), 50);
                                 }
                             }
                         }}
@@ -177,13 +193,47 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
                                 setIsReviewGuideOpen(false);
                                 onSelectTemplate(plainTextSmartConvert(text));
                             }
-                        } catch (e) {
-                            console.error('Failed to read clipboard', e);
-                            showToast('\u064a\u0631\u062c\u0649 \u0625\u0639\u0637\u0627\u0621 \u0635\u0644\u0627\u062d\u064a\u0629 \u0627\u0644\u0644\u0635\u0642 \u0623\u0648 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 Ctrl+V');
+                        } catch {
+                            setIsReviewGuideOpen(false);
+                            setShowPasteArea(true);
+                            setTimeout(() => pasteAreaRef.current?.focus(), 50);
                         }
                     }
                 }}
             />
+            {/* Fallback paste area for Firefox / blocked clipboard API */}
+            {showPasteArea && createPortal(
+                <div
+                    className="fixed inset-0 z-[200] flex items-center justify-center bg-background/80 backdrop-blur-sm"
+                    onClick={() => setShowPasteArea(false)}
+                >
+                    <div
+                        className="bg-card border border-border rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4 flex flex-col gap-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between">
+                            <h3 className="font-bold text-lg text-foreground">الصق هنا</h3>
+                            <button
+                                onClick={() => setShowPasteArea(false)}
+                                className="text-muted hover:text-foreground transition-colors text-xl leading-none"
+                            >✕</button>
+                        </div>
+                        <p className="text-sm text-muted">
+                            متصفحك لا يسمح بالقراءة التلقائية من الحافظة.
+                            اضغط <kbd className="font-mono bg-secondary px-1.5 py-0.5 rounded border border-border text-foreground text-xs">Ctrl+V</kbd> داخل الحقل أدناه.
+                        </p>
+                        <textarea
+                            ref={pasteAreaRef}
+                            className="w-full h-32 bg-secondary border border-border rounded-xl p-3 text-sm text-foreground resize-none focus:outline-none focus:border-accent"
+                            placeholder="اضغط Ctrl+V هنا..."
+                            onPaste={handlePasteAreaPaste}
+                            dir="auto"
+                        />
+                    </div>
+                </div>,
+                document.body
+            )}
+
             {createPortal(
                 <Toast
                     message={toast?.message ?? ''}
