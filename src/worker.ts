@@ -3,8 +3,8 @@ import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
 
 const assetManifest = JSON.parse(manifestJSON);
-const PRIMARY_TRANSLATION_MODEL = "@cf/google/gemma-4-26b-a4b-it";
-const FALLBACK_TRANSLATION_MODEL = "@cf/zai-org/glm-4.7-flash";
+const PRIMARY_TRANSLATION_MODEL = "@cf/zai-org/glm-4.7-flash";
+const FALLBACK_TRANSLATION_MODEL = "@cf/meta/llama-3.2-11b-vision-instruct";
 const MAX_TRANSLATION_CHARS = 50000;
 
 function extractTranslation(response: any): string | null {

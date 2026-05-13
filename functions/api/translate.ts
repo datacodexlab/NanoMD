@@ -1,5 +1,5 @@
-const PRIMARY_MODEL = "@cf/google/gemma-4-26b-a4b-it";
-const FALLBACK_MODEL = "@cf/zai-org/glm-4.7-flash";
+const PRIMARY_MODEL = "@cf/zai-org/glm-4.7-flash";
+const FALLBACK_MODEL = "@cf/meta/llama-3.2-11b-vision-instruct";
 const MAX_CHARS = 50000;
 
 function extractTranslation(response: any): string | null {
