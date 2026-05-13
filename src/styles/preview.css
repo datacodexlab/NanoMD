@@ -608,6 +608,145 @@
 }
 
 /* ============================================
+   Mobile Card Layout (< 640px)
+   ============================================ */
+
+.review-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    padding-bottom: 80px;
+}
+
+.review-card {
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--bg-primary);
+    transition: background 0.2s;
+}
+
+.review-card-section-1 {
+    background: var(--bg-secondary);
+}
+
+.review-card-done {
+    background: color-mix(in srgb, var(--accent-success) 8%, var(--bg-primary)) !important;
+    border-color: color-mix(in srgb, var(--accent-success) 35%, transparent) !important;
+}
+
+.review-card-section-1.review-card-done {
+    background: color-mix(in srgb, var(--accent-success) 8%, var(--bg-secondary)) !important;
+}
+
+.review-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.review-card-num {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 700;
+    min-width: 22px;
+    padding-top: 2px;
+    flex-shrink: 0;
+}
+
+.review-card-item {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.4;
+    flex: 1;
+}
+
+.review-card-rec {
+    font-size: 13px;
+    color: var(--accent-primary);
+    padding-right: 30px;
+    line-height: 1.4;
+}
+
+.review-card-detail {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding-right: 30px;
+    line-height: 1.4;
+}
+
+.review-card-buttons {
+    gap: 8px !important;
+    margin-top: 2px;
+}
+
+.review-quick-btn-mobile {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    font-size: 20px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    border-radius: 10px !important;
+}
+
+.review-separator-divider {
+    text-align: center;
+    font-weight: 700;
+    color: var(--accent-primary);
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent-primary) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent-primary) 25%, transparent);
+}
+
+.review-copy-bar-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-default);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+    padding: 10px 16px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+}
+
+.review-copy-bar-mobile .review-copy-btn {
+    width: 100%;
+    padding: 13px 24px;
+    font-size: 16px;
+}
+
+@media (max-width: 639px) {
+    .review-progress-bar {
+        height: 8px;
+    }
+
+    .review-progress {
+        padding: 10px 12px;
+    }
+
+    .review-progress-text {
+        font-size: 12px;
+    }
+
+    .review-table-container {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+}
+
+/* ============================================
    Print Styles for Review Table
    ============================================ */
 @media print {
