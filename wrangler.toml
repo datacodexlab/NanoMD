@@ -1,3 +1,10 @@
 name = "nanomd"
 compatibility_date = "2024-12-01"
 pages_build_output_dir = "./dist"
+
+[[kv_namespaces]]
+binding = "SHARED_CONTENT"
+id = "e0514e5dc0e54137a3e6a688e790bbdf"
+
+[ai]
+binding = "AI"
