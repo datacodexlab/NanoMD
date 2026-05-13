@@ -1,8 +1,13 @@
-// Repairs UTF-8 text that was transmitted as Latin-1 bytes (common with some HTTP clients)
+// Repairs UTF-8 text transmitted as Latin-1 bytes (some HTTP clients don't set charset).
+// Only attempts repair when ALL chars are ≤ U+00FF — the signature of UTF-8 bytes
+// stored as Latin-1 code points. Proper Unicode (any char > U+00FF) is returned as-is.
 function tryRepairEncoding(str: string): string {
+    for (let i = 0; i < str.length; i++) {
+        if (str.charCodeAt(i) > 0xFF) return str;
+    }
     try {
         const bytes = new Uint8Array(str.length);
-        for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i) & 0xFF;
+        for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i);
         return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
     } catch {
         return str;
