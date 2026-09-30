@@ -10,37 +10,62 @@
     line-height: var(--leading-relaxed);
     color: var(--text-primary);
     direction: rtl;
-    text-align: right;
+    text-align: start;
     transition: all 0.2s ease;
     overflow-wrap: break-word;
     word-wrap: break-word;
     background-color: var(--preview-bg);
 }
 
-/* ========== RTL Enforcement for Nested Blocks ========== */
+/* ========== RTL Enforcement for All Blocks ==========
+   Direction is forced, never derived from content (no unicode-bidi: plaintext
+   on blocks), so bold-only or code-first blocks cannot flip to LTR. */
 .preview-content p,
+.preview-content h1,
+.preview-content h2,
+.preview-content h3,
+.preview-content h4,
+.preview-content h5,
+.preview-content h6,
+.preview-content ul,
+.preview-content ol,
 .preview-content li,
+.preview-content li > *,
 .preview-content blockquote,
 .preview-content blockquote > *,
 .preview-content blockquote blockquote,
-.preview-content li > *,
-.preview-content td,
+.preview-content table,
 .preview-content th,
+.preview-content td,
 .preview-content details,
 .preview-content summary,
-.preview-content figcaption,
 .preview-content dd,
-.preview-content dt {
+.preview-content dt,
+.preview-content figcaption {
     direction: rtl;
-    text-align: right;
+    text-align: start;
 }
 
-/* ========== BiDi Isolation for Inline Elements ========== */
+/* ========== BiDi Isolation for Inline Elements ==========
+   Isolated, but they inherit the forced rtl direction so trailing
+   punctuation after bold/emphasis stays on the correct side. */
 .preview-content strong,
 .preview-content em,
 .preview-content b,
 .preview-content i,
-.preview-content a {
+.preview-content a,
+.preview-content del {
+    unicode-bidi: isolate;
+}
+
+/* Date/time tokens wrapped by rehypeBidi must not break across lines */
+.preview-content .bidi-nowrap {
+    white-space: nowrap;
+}
+
+/* LTR runs from rehypeBidi must win over the block-level rtl rules (li > *, blockquote > *) */
+.preview-content bdi[dir="ltr"] {
+    direction: ltr;
     unicode-bidi: isolate;
 }
 
@@ -86,8 +111,6 @@
 .preview-content p {
     margin-bottom: 1.5rem;
     font-weight: var(--weight-normal);
-    unicode-bidi: plaintext;
-    text-align: start;
 }
 
 /* ========== Links ========== */
@@ -113,8 +136,7 @@
     font-family: var(--font-mono);
     font-size: 0.875em;
     border: 1px solid var(--code-border);
-    direction: ltr;
-    unicode-bidi: isolate;
+    unicode-bidi: plaintext;
 }
 
 /* ========== Blockquotes ========== */
@@ -142,13 +164,18 @@
     padding-inline-start: 1.5rem;
 }
 
-.preview-content li {
-    margin-bottom: 0.5rem;
-    unicode-bidi: plaintext;
-    text-align: start;
+/* Nested lists indent through the parent's padding-inline-start */
+.preview-content li > ul,
+.preview-content li > ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
 }
 
-.preview-content ul li::before {
+.preview-content li {
+    margin-bottom: 0.5rem;
+}
+
+.preview-content ul > li::before {
     content: "—";
     color: var(--text-muted);
     margin-inline-end: 0.75rem;
@@ -157,6 +184,17 @@
 
 .preview-content ol {
     list-style-type: decimal;
+    list-style-position: outside;
+}
+
+/* GFM task lists: the checkbox replaces the dash */
+.preview-content li.task-list-item::before {
+    content: none;
+}
+
+.preview-content li.task-list-item input {
+    margin-inline-end: 0.5rem;
+    vertical-align: middle;
 }
 
 /* ========== Tables (Manus Minimalist) ========== */
@@ -171,8 +209,6 @@
 .preview-content th {
     background: transparent;
     padding: 12px 8px;
-    unicode-bidi: plaintext;
-    text-align: start;
     font-family: var(--font-outfit);
     font-weight: 600;
     border: none;
@@ -185,7 +221,6 @@
     border: none;
     border-bottom: 1px solid var(--border-subtle);
     color: var(--text-primary);
-    unicode-bidi: plaintext;
 }
 
 .preview-content tbody tr:hover {

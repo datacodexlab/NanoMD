@@ -166,7 +166,7 @@ function App() {
 
             {appState.viewMode !== 'focus' && (
                 <footer className="app-footer">
-                    <span>v1.7.1</span>
+                    <span>v{__APP_VERSION__}</span>
                     <span>© {new Date().getFullYear()} DataCodex. All rights reserved.</span>
                 </footer>
             )}

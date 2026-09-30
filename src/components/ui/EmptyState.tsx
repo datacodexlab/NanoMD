@@ -197,7 +197,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onSelectTemplate }) => {
                             className="w-full h-32 bg-secondary border border-border rounded-xl p-3 text-sm text-foreground resize-none focus:outline-none focus:border-accent"
                             placeholder="اضغط Ctrl+V هنا..."
                             onPaste={handlePasteAreaPaste}
-                            dir="auto"
+                            dir="rtl"
                         />
                     </div>
                 </div>,

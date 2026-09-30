@@ -90,7 +90,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ content, onChange, autoF
                 }}
                 className="editor-textarea flex-1 w-full p-4 sm:p-6 bg-transparent resize-none outline-none text-foreground font-mono leading-relaxed"
                 placeholder="اكتب أو الصق نص الماركداون هنا..."
-                dir="auto"
+                dir="rtl"
                 spellCheck={false}
             />
         </div>

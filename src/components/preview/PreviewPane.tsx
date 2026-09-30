@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeHighlight from 'rehype-highlight';
+import rehypeBidi from '../../utils/rehypeBidi';
 import { CodeBlock } from './CodeBlock';
 import { ReviewTable } from './ReviewTable';
 import '../../styles/preview.css';
@@ -169,7 +170,9 @@ const sanitizeSchema = {
     },
 };
 
-const rehypePlugins: any[] = [[rehypeSanitize, sanitizeSchema], rehypeHighlight];
+// rehypeBidi must run after rehype-sanitize (which would strip <bdi>) and after
+// rehypeHighlight (its spans live inside code, which rehypeBidi skips anyway).
+const rehypePlugins: any[] = [[rehypeSanitize, sanitizeSchema], rehypeHighlight, rehypeBidi];
 
 /**
  * PreviewPane — renders markdown content with auto-detection of review tables.
@@ -178,7 +181,7 @@ const rehypePlugins: any[] = [[rehypeSanitize, sanitizeSchema], rehypeHighlight]
 export const PreviewPane: React.FC<PreviewPaneProps> = React.memo(({ content }) => {
     return (
         <div id="print-area" className="preview-pane w-full h-full overflow-y-auto">
-            <div className="preview-content max-w-3xl mx-auto pb-24">
+            <div className="preview-content max-w-3xl mx-auto pb-24" dir="rtl">
                 <ReactMarkdown
                     remarkPlugins={remarkPlugins}
                     rehypePlugins={rehypePlugins}
