@@ -1,5 +1,14 @@
-const PRIMARY_MODEL = "@cf/zai-org/glm-4.7-flash";
-const FALLBACK_MODEL = "@cf/meta/llama-3.2-11b-vision-instruct";
+interface ModelConfig {
+    id: string;
+    extra: Record<string, unknown>;
+}
+
+// Tried in order. GLM is a reasoning model: with thinking on, a short text takes 40s+.
+const MODELS: ModelConfig[] = [
+    { id: "@cf/zai-org/glm-4.7-flash", extra: { chat_template_kwargs: { enable_thinking: false } } },
+    { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", extra: {} },
+];
+const MODEL_TIMEOUT_MS = 15000;
 const MAX_CHARS = 50000;
 
 function extractTranslation(response: any): string | null {
@@ -11,6 +20,20 @@ function extractTranslation(response: any): string | null {
     }
     if (typeof response?.choices?.[0]?.text === "string") return response.choices[0].text;
     return null;
+}
+
+async function runModel(env: any, model: ModelConfig, messages: unknown[]): Promise<string | null> {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error("timeout")), MODEL_TIMEOUT_MS);
+    });
+    try {
+        const res = await Promise.race([env.AI.run(model.id, { messages, ...model.extra }), timeout]);
+        const text = extractTranslation(res);
+        return text && text.trim() ? text : null;
+    } finally {
+        clearTimeout(timer);
+    }
 }
 
 function buildPrompt(targetLang: "ar" | "en", useContext: boolean): string {
@@ -25,7 +48,8 @@ function buildPrompt(targetLang: "ar" | "en", useContext: boolean): string {
 4. Do NOT translate URLs or file paths
 5. Do NOT add explanations or notes
 6. Output ONLY the translated text
-7. Maintain the original paragraph structure`;
+7. Maintain the original paragraph structure
+8. Do NOT repeat the original term in parentheses after its translation`;
 }
 
 export async function onRequestPost(context: any) {
@@ -57,12 +81,13 @@ export async function onRequestPost(context: any) {
         const messages = [{ role: "system", content: prompt }, { role: "user", content: body.text }];
 
         let translated: string | null = null;
-        try {
-            const res = await env.AI.run(PRIMARY_MODEL, { messages });
-            translated = extractTranslation(res);
-        } catch {
-            const res = await env.AI.run(FALLBACK_MODEL, { messages });
-            translated = extractTranslation(res);
+        for (const model of MODELS) {
+            try {
+                translated = await runModel(env, model, messages);
+            } catch {
+                translated = null;
+            }
+            if (translated) break;
         }
 
         if (!translated) throw new Error("Empty response");

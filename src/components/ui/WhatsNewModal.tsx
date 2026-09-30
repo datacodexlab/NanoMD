@@ -9,8 +9,25 @@ interface WhatsNewModalProps {
 
 const updates = [
     {
-        version: 'v1.8.2',
+        version: 'v1.8.3',
         isLatest: true,
+        title: 'ترجمة أسرع بكتير',
+        items: [
+            {
+                icon: <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />,
+                title: 'من 40 ثانية لـ 3 ثواني',
+                desc: 'الترجمة كانت بتستنى النموذج "يفكر" قبل ما يكتب. اتوقف التفكير فبقت الترجمة القصيرة بتخلص في ثواني معدودة.',
+            },
+            {
+                icon: <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />,
+                title: 'نموذج احتياطي شغال',
+                desc: 'لو النموذج الأساسي وقع أو تأخر أكتر من 15 ثانية، الترجمة بتتحول أوتوماتيك لنموذج تاني بدل ما تفشل.',
+            },
+        ],
+    },
+    {
+        version: 'v1.8.2',
+        isLatest: false,
         title: 'أزرار جانبية ما بتغطيش النص',
         items: [
             {
