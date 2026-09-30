@@ -99,6 +99,8 @@ function App() {
 
     // Sync content emptiness
     const hasContent = appState.content.trim().length > 0;
+    const showScrollNav = appState.viewMode !== 'focus' && hasContent &&
+        (appState.viewMode === 'preview' || appState.viewMode === 'split');
 
     if (isLoadingShare) {
         return (
@@ -134,7 +136,7 @@ function App() {
                 </div>
             )}
 
-            <main className="flex-1 overflow-hidden relative flex flex-col">
+            <main className={`flex-1 overflow-hidden relative flex flex-col${showScrollNav ? ' has-scroll-nav' : ''}`}>
                 {appState.viewMode === 'focus' ? (
                     <FocusMode content={appState.content} />
                 ) : hasContent ? (
@@ -153,7 +155,7 @@ function App() {
                             }
                         />
                         <CopyMenu markdownContent={appState.content} />
-                        {(appState.viewMode === 'preview' || appState.viewMode === 'split') && <ScrollNav />}
+                        {showScrollNav && <ScrollNav />}
                     </>
                 ) : (
                     <EmptyState onSelectTemplate={handleSelectTemplate} />

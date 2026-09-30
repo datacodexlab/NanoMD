@@ -9,8 +9,20 @@ interface WhatsNewModalProps {
 
 const updates = [
     {
-        version: 'v1.8.1',
+        version: 'v1.8.2',
         isLatest: true,
+        title: 'أزرار جانبية ما بتغطيش النص',
+        items: [
+            {
+                icon: <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />,
+                title: 'مساحة محجوزة للأزرار',
+                desc: 'أزرار CTX و AR و EN على الجنب ما بقتش بتغطي بداية السطر في المحرر أو المعاينة على شاشات سطح المكتب.',
+            },
+        ],
+    },
+    {
+        version: 'v1.8.1',
+        isLatest: false,
         title: 'العربي دايماً من اليمين',
         items: [
             {
