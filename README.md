@@ -100,5 +100,5 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) to get started
 ---
 
 <div align="center">
-  <sub>Built by <a href="https://github.com/Alfareslab">DataCodexLab</a> · MIT License</sub>
+  <sub>Built by <a href="https://github.com/datacodexlab">DataCodexLab</a> · MIT License</sub>
 </div>

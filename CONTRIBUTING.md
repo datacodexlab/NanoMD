@@ -9,8 +9,8 @@
 ```bash
 # 1. Fork المشروع من GitHub
 # 2. Clone نسختك
-git clone https://github.com/YOUR_USERNAME/NanoMD-Public.git
-cd NanoMD-Public
+git clone https://github.com/YOUR_USERNAME/NanoMD.git
+cd NanoMD
 
 # 3. تثبيت الاعتمادات
 npm install
@@ -45,7 +45,7 @@ npm run dev
 
 ## الإبلاغ عن مشكلة
 
-افتح [Issue](https://github.com/Alfareslab/NanoMD-Public/issues) مع:
+افتح [Issue](https://github.com/datacodexlab/NanoMD/issues) مع:
 - وصف المشكلة
 - خطوات التكرار
 - المتصفح والنظام
