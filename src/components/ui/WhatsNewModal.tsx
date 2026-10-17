@@ -9,8 +9,25 @@ interface WhatsNewModalProps {
 
 const updates = [
     {
-        version: 'v1.9.1',
+        version: 'v1.10.0',
         isLatest: true,
+        title: 'النص بقى يتسمع',
+        items: [
+            {
+                icon: <Sparkles className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />,
+                title: 'القراءة الصوتية بصوت مصري طبيعي',
+                desc: 'اضغط زرار التشغيل والمعاينة تتقري بصوت Gemini، والكلام الإنجليزي بيتنطق إنجليزي. السرعة من الشريط، والفقرة اللي بتتقري بتتلوّن.',
+            },
+            {
+                icon: <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />,
+                title: 'مفتاحك في متصفحك بس',
+                desc: 'بتحط مفتاح Gemini بتاعك من ⚙ الذكاء الاصطناعي. المفتاح بيروح لـ Google مباشرة، والصوت اللي اتولد بيتحفظ عندك فما بيستهلكش الحصة تاني.',
+            },
+        ],
+    },
+    {
+        version: 'v1.9.1',
+        isLatest: false,
         title: 'بداية قراءة أريح',
         items: [
             {

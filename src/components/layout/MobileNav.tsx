@@ -1,6 +1,10 @@
-import React, { useState, useCallback } from 'react';
-import { Eye, Pencil, ChevronUp, ChevronDown, Undo2, Loader2, FileOutput } from 'lucide-react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Eye, Pencil, ChevronUp, ChevronDown, Undo2, Loader2, FileOutput, Volume2, Pause, Play } from 'lucide-react';
 import { useAppContext } from '../../contexts/AppContext';
+import { useReadAloud } from '../../contexts/ReadAloudContext';
+import { openAiSettings } from '../ui/AiSettingsModal';
+
+const LONG_PRESS_MS = 600;
 
 // ─────────────────────────────────────────────────────────
 // NavItem: a single polished tab button in the bottom bar
@@ -12,24 +16,27 @@ interface NavItemProps {
     accent?: boolean;     // use accent color even when inactive
     amber?: boolean;      // amber tint (undo)
     disabled?: boolean;
-    onClick?: (e?: any) => void;
+    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     onLongPress?: () => void;
+    contextActive?: boolean;
 }
 
 const NavItem: React.FC<NavItemProps> = ({
-    icon, label, active, accent, amber, disabled, onClick, onLongPress
+    icon, label, active, accent, amber, disabled, onClick, onLongPress, contextActive
 }) => {
     const timerRef = React.useRef<NodeJS.Timeout>();
     const isLongPress = React.useRef(false);
+    useEffect(() => () => clearTimeout(timerRef.current), []);
 
     const startPress = () => {
+        clearTimeout(timerRef.current);
         isLongPress.current = false;
         if (onLongPress && !disabled) {
             timerRef.current = setTimeout(() => {
                 isLongPress.current = true;
                 if(window.navigator && window.navigator.vibrate) window.navigator.vibrate(50);
                 onLongPress();
-            }, 500);
+            }, LONG_PRESS_MS);
         }
     };
 
@@ -39,7 +46,7 @@ const NavItem: React.FC<NavItemProps> = ({
         }
     };
 
-    const handleClick = (e: React.MouseEvent) => {
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (isLongPress.current) {
             e.preventDefault();
             e.stopPropagation();
@@ -64,20 +71,27 @@ const NavItem: React.FC<NavItemProps> = ({
         ? 'hover:bg-amber-500/10'
         : 'hover:bg-bg-secondary/70';
 
-    const pillStyle = active
+    const pillStyle = active || contextActive
         ? { background: 'color-mix(in srgb, var(--accent-primary) 15%, var(--bg-primary))' }
-        : {};
+        : { background: 'transparent' };
 
     return (
         <button
             onClick={handleClick}
-            onTouchStart={startPress}
-            onTouchEnd={cancelPress}
-            onTouchMove={cancelPress}
-            onMouseDown={startPress}
-            onMouseUp={cancelPress}
-            onMouseLeave={cancelPress}
-            onContextMenu={(e) => { if(onLongPress) e.preventDefault(); }}
+            onPointerDown={event => { if (event.button === 0) startPress(); }}
+            onPointerUp={cancelPress}
+            onPointerMove={event => { if (event.pointerType === 'touch') cancelPress(); }}
+            onPointerCancel={cancelPress}
+            onPointerLeave={cancelPress}
+            onContextMenu={event => {
+                if (onLongPress && !disabled) {
+                    event.preventDefault();
+                    cancelPress();
+                    if (!isLongPress.current) onLongPress();
+                    isLongPress.current = true;
+                }
+            }}
+            aria-label={label}
             disabled={disabled}
             className={`
                 relative flex flex-col items-center justify-center flex-1 min-w-0
@@ -131,6 +145,25 @@ const Divider = () => (
 export const MobileNav: React.FC = () => {
     const { appState, setAppState, translationState, translateContent, undoTranslation, toggleContextTranslation } = useAppContext();
     const [targetLang, setTargetLang] = useState<'ar' | 'en'>('ar');
+    const { status, hasKey, play, pause } = useReadAloud();
+    const [translationOptionsOpen, setTranslationOptionsOpen] = useState(false);
+    const translationOptionsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!translationOptionsOpen) return;
+        const outside = (event: PointerEvent) => {
+            if (event.target instanceof Node && !translationOptionsRef.current?.contains(event.target)) setTranslationOptionsOpen(false);
+        };
+        const escape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') setTranslationOptionsOpen(false);
+        };
+        document.addEventListener('pointerdown', outside);
+        window.addEventListener('keydown', escape);
+        return () => {
+            document.removeEventListener('pointerdown', outside);
+            window.removeEventListener('keydown', escape);
+        };
+    }, [translationOptionsOpen]);
 
     const handleTabClick = (view: 'preview' | 'editor') => {
         setAppState(prev => ({ ...prev, viewMode: view }));
@@ -198,19 +231,26 @@ export const MobileNav: React.FC = () => {
 
                 {hasContent && <Divider />}
 
-                {/* ── Context Translate Toggle ── */}
+                {/* Read aloud */}
                 {hasContent && (
                     <NavItem
-                        icon={<span className="text-[10px] font-black tracking-tight leading-none">CTX</span>}
-                        label="سياق"
-                        active={appState.useContextTranslation}
-                        disabled={translationState.isTranslating}
-                        onClick={toggleContextTranslation}
+                        icon={status === 'loading' ? <Loader2 className="w-[18px] h-[18px] animate-spin" />
+                            : status === 'playing' ? <Pause className="w-[18px] h-[18px]" />
+                                : status === 'paused' ? <Play className="w-[18px] h-[18px]" /> : <Volume2 className="w-[18px] h-[18px]" />}
+                        label="استماع"
+                        active={status === 'playing' || status === 'paused'}
+                        onClick={() => {
+                            if (!hasKey) openAiSettings();
+                            else if (status === 'playing') pause();
+                            else play();
+                        }}
+                        onLongPress={openAiSettings}
                     />
                 )}
 
                 {/* ── Smart Translate ── */}
                 {hasContent && (
+                    <div ref={translationOptionsRef} className="relative flex min-w-0 flex-1 self-stretch">
                     <NavItem
                         icon={
                             translationState.isTranslating
@@ -219,10 +259,27 @@ export const MobileNav: React.FC = () => {
                         }
                         label="ترجمة"
                         accent
+                        contextActive={appState.useContextTranslation}
                         disabled={translationState.isTranslating}
                         onClick={() => translateContent(targetLang)}
-                        onLongPress={() => setTargetLang(prev => prev === 'ar' ? 'en' : 'ar')}
+                        onLongPress={() => setTranslationOptionsOpen(true)}
                     />
+                    {translationOptionsOpen && <div role="dialog" aria-label="خيارات الترجمة" dir="rtl"
+                        className="absolute bottom-full left-0 mb-3 w-56 space-y-3 rounded-xl border p-3 text-xs shadow-lg"
+                        style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', borderColor: 'var(--border-default)' }}>
+                        <label className="flex items-center justify-between gap-2">
+                            ترجمة بالسياق (CTX)
+                            <input type="checkbox" checked={appState.useContextTranslation} onChange={toggleContextTranslation} />
+                        </label>
+                        <div className="flex gap-2" dir="ltr" role="group" aria-label="لغة الترجمة">
+                            {(['ar', 'en'] as const).map(lang => <button key={lang} aria-pressed={targetLang === lang}
+                                className="flex-1 rounded-lg border px-3 py-2" onClick={() => setTargetLang(lang)}
+                                style={{ borderColor: 'var(--border-default)', background: targetLang === lang ? 'color-mix(in srgb, var(--accent-primary) 15%, var(--bg-primary))' : 'transparent' }}>
+                                {lang.toUpperCase()}
+                            </button>)}
+                        </div>
+                    </div>}
+                    </div>
                 )}
 
                 {/* ── Undo Translation ── */}

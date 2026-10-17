@@ -6,6 +6,7 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeBidi from '../../utils/rehypeBidi';
 import { CodeBlock } from './CodeBlock';
 import { ReviewTable } from './ReviewTable';
+import { ReadAloudPlayer } from '../ui/ReadAloudPlayer';
 import '../../styles/preview.css';
 
 // Review column names that trigger Review Mode
@@ -180,15 +181,18 @@ const rehypePlugins: any[] = [[rehypeSanitize, sanitizeSchema], rehypeHighlight,
  */
 export const PreviewPane: React.FC<PreviewPaneProps> = React.memo(({ content }) => {
     return (
-        <div id="print-area" className="preview-pane w-full h-full overflow-y-auto">
-            <div className="preview-content max-w-3xl mx-auto pb-24" dir="rtl">
-                <ReactMarkdown
-                    remarkPlugins={remarkPlugins}
-                    rehypePlugins={rehypePlugins}
-                    components={markdownComponents}
-                >
-                    {content}
-                </ReactMarkdown>
+        <div className="flex h-full min-h-0 w-full flex-col print:block">
+            <ReadAloudPlayer />
+            <div id="print-area" className="preview-pane min-h-0 w-full flex-1 overflow-y-auto">
+                <div className="preview-content max-w-3xl mx-auto pb-24" dir="rtl">
+                    <ReactMarkdown
+                        remarkPlugins={remarkPlugins}
+                        rehypePlugins={rehypePlugins}
+                        components={markdownComponents}
+                    >
+                        {content}
+                    </ReactMarkdown>
+                </div>
             </div>
         </div>
     );

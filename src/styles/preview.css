@@ -970,3 +970,9 @@
 :root:is([data-theme="slate"], [data-theme="noir"]) .preview-content hr {
     margin: 1.5rem 0;
 }
+
+.preview-content .read-aloud-active {
+    background: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}

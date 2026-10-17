@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AppState } from '../types';
+import { getSettings } from '../lib/ai/key-store';
+import { translateWithFallback } from '../lib/ai/fallback';
+import { InvalidKeyError, NoKeyError, QuotaExhaustedError } from '../lib/ai/types';
 
 interface TranslationState {
     isTranslating: boolean;
@@ -51,21 +54,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         setIsTranslating(true);
         setTranslateError(null);
+        const useGemini = getSettings().translationSource === 'gemini';
 
         try {
-            const response = await fetch('/api/translate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    text: textToTranslate,
-                    targetLang,
-                    useContextTranslation: appState.useContextTranslation
-                })
-            });
+            let data: { translated: string };
+            if (useGemini) {
+                data = { translated: await translateWithFallback(textToTranslate, targetLang, appState.useContextTranslation) };
+            } else {
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: textToTranslate,
+                        targetLang,
+                        useContextTranslation: appState.useContextTranslation
+                    })
+                });
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.error || 'Translation failed');
+                data = await response.json();
+                if (!response.ok) {
+                    throw new Error((data as { error?: string }).error || 'Translation failed');
+                }
             }
 
             setUndoHistory(appState.content);
@@ -84,11 +93,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                     editorSelection: null
                 };
             });
-        } catch (error: any) {
-            const message = error?.message || 'Translation failed';
+        } catch (error: unknown) {
+            const message = error instanceof NoKeyError ? 'ضيف مفتاح Gemini من إعدادات الصوت والذكاء الاصطناعي'
+                : error instanceof QuotaExhaustedError ? 'حصة الترجمة على مفاتيحك خلصت حالياً'
+                    : error instanceof InvalidKeyError ? 'مفتاح Gemini مرفوض'
+                        : useGemini ? 'حصلت مشكلة في الاتصال. جرّب تاني.'
+                            : error instanceof Error ? error.message : 'Translation failed';
             setTranslateError(message);
             setTimeout(() => setTranslateError(null), 3000);
-            console.error('Translation error:', error);
+            if (!useGemini) console.error('Translation error:', error);
         } finally {
             setIsTranslating(false);
         }

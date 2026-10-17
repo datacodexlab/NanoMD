@@ -1,9 +1,24 @@
-import { useEffect, useState, useCallback } from 'react';
-import { ChevronsUp, ChevronUp, ChevronDown, ChevronsDown, Undo2, Loader2 } from 'lucide-react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { ChevronsUp, ChevronUp, ChevronDown, ChevronsDown, Undo2, Loader2, Volume2, Pause, Play } from 'lucide-react';
 import { useAppContext } from '../../contexts/AppContext';
+import { useReadAloud } from '../../contexts/ReadAloudContext';
+import { openAiSettings } from './AiSettingsModal';
 
 export const ScrollNav = () => {
     const { appState, translationState, translateContent, undoTranslation, toggleContextTranslation } = useAppContext();
+    const { status, hasKey, play, pause } = useReadAloud();
+    const pressTimer = useRef<ReturnType<typeof setTimeout>>();
+    const longPressed = useRef(false);
+    const cancelPress = () => clearTimeout(pressTimer.current);
+    useEffect(() => () => clearTimeout(pressTimer.current), []);
+    const startPress = () => {
+        cancelPress();
+        longPressed.current = false;
+        pressTimer.current = setTimeout(() => {
+            longPressed.current = true;
+            openAiSettings();
+        }, 600);
+    };
     const [showTop, setShowTop] = useState(false);
     const [showUp, setShowUp] = useState(false);
     const [showDown, setShowDown] = useState(false);
@@ -113,6 +128,31 @@ export const ScrollNav = () => {
                 <div className="scroll-nav">
                     {/* Translation Controls */}
                     <div className="flex flex-col gap-2 pb-2 mb-2 border-b border-border-default">
+                        <button
+                            className={`scroll-nav-btn visible ${status === 'playing' || status === 'paused' ? 'ctx-active' : ''}`}
+                            title="استمع للنص (ضغطة طويلة للإعدادات)"
+                            aria-label="استمع للنص (ضغطة طويلة للإعدادات)"
+                            onPointerDown={event => { if (event.button === 0) startPress(); }}
+                            onPointerUp={cancelPress}
+                            onPointerLeave={cancelPress}
+                            onPointerCancel={cancelPress}
+                            onContextMenu={event => {
+                                event.preventDefault();
+                                cancelPress();
+                                longPressed.current = true;
+                                openAiSettings();
+                            }}
+                            onClick={event => {
+                                if (longPressed.current) { event.preventDefault(); return; }
+                                if (!hasKey) openAiSettings();
+                                else if (status === 'playing') pause();
+                                else play();
+                            }}
+                        >
+                            {status === 'loading' ? <Loader2 size={16} className="animate-spin" />
+                                : status === 'playing' ? <Pause size={16} />
+                                    : status === 'paused' ? <Play size={16} /> : <Volume2 size={16} />}
+                        </button>
                         <button
                             className={`scroll-nav-btn visible ${appState.useContextTranslation ? 'ctx-active' : 'ctx-inactive'}`}
                             onClick={toggleContextTranslation}

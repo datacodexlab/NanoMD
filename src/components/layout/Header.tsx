@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Eye, Pencil, Columns2, Focus, ClipboardPaste, Copy, Trash2, Sun, Moon, HelpCircle, Upload, Printer, Share2, Loader2, History, Save, Sparkles } from 'lucide-react';
+import { Eye, Pencil, Columns2, Focus, ClipboardPaste, Copy, Trash2, Sun, Moon, HelpCircle, Upload, Printer, Share2, Loader2, History, Save, Sparkles, Settings } from 'lucide-react';
+import { openAiSettings } from '../ui/AiSettingsModal';
 import { useAppContext } from '../../contexts/AppContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { htmlToMarkdown, plainTextSmartConvert } from '../../utils/htmlToMarkdown';
@@ -328,6 +329,11 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
                         <button onClick={cycleTheme} title="تغيير الثيم" className="mobile-icon-btn shrink-0 text-text-muted hover:text-text-primary hover:bg-bg-secondary snap-start">
                             {getThemeIcon()}
                         </button>
+
+                        {/* AI settings (keys, voice, translation source) */}
+                        <button onClick={openAiSettings} title="الذكاء الاصطناعي" className="mobile-icon-btn shrink-0 text-text-muted hover:text-text-primary hover:bg-bg-secondary snap-start">
+                            <Settings className="mobile-icon" />
+                        </button>
                     </div>
                 </div>
 
@@ -375,6 +381,7 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
                     {/* Right-side utility buttons */}
                     <NavButton onClick={() => setShowWhatsNewModal(true)} icon={<Sparkles className="w-3.5 h-3.5" />} label="ما الجديد؟" variant="highlight" />
                     <NavButton onClick={cycleTheme} icon={getThemeIcon()} label={getThemeLabel(theme)} />
+                    <NavButton onClick={openAiSettings} icon={<Settings className="w-3.5 h-3.5" />} label="الذكاء الاصطناعي" iconOnly />
                     <NavButton onClick={handleHelp} icon={<HelpCircle className="w-3.5 h-3.5" />} label="مساعدة" />
                 </div>
 

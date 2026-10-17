@@ -8,6 +8,7 @@ import { SplitView } from './components/layout/SplitView';
 import { FocusMode } from './components/layout/FocusMode';
 import { CopyMenu } from './components/ui/CopyMenu';
 import { ScrollNav } from './components/ui/ScrollNav';
+import { AiSettingsModal } from './components/ui/AiSettingsModal';
 import { SaveIndicator } from './components/ui/SaveIndicator';
 import { useSmartPaste } from './hooks/useSmartPaste';
 import { useKeyboard } from './hooks/useKeyboard';
@@ -19,6 +20,13 @@ function App() {
 
     const [isLoadingShare, setIsLoadingShare] = useState(false);
     const [shareError, setShareError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const showPreview = () => setAppState(prev => prev.viewMode === 'editor'
+            ? { ...prev, viewMode: 'preview' } : prev);
+        window.addEventListener('nanomd:show-preview', showPreview);
+        return () => window.removeEventListener('nanomd:show-preview', showPreview);
+    }, [setAppState]);
 
     // Load content from URL share ID or hash
     useEffect(() => {
@@ -163,6 +171,7 @@ function App() {
             </main>
 
             <SaveIndicator status={saveStatus} />
+            <AiSettingsModal />
 
             {appState.viewMode !== 'focus' && <MobileNav />}
 
