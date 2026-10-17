@@ -107,10 +107,11 @@ export function AiSettingsModal() {
     const runTest = async (id: string, key: string) => {
         const generation = testGeneration.current;
         setTesting(prev => ({ ...prev, [id]: true }));
-        const ok = await testKey(key);
+        const { ok, detail } = await testKey(key);
         if (generation !== testGeneration.current) return;
         setTesting(prev => ({ ...prev, [id]: false }));
-        setTestResults(prev => ({ ...prev, [id]: ok ? 'المفتاح شغال ✓' : 'المفتاح مرفوض' }));
+        const label = ok ? 'المفتاح شغال ✓' : 'المفتاح مرفوض';
+        setTestResults(prev => ({ ...prev, [id]: detail ? `${label} — ${detail}` : label }));
     };
 
     const saveKey = () => {

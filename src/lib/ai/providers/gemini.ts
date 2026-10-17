@@ -58,14 +58,33 @@ async function toError(response: Response): Promise<GeminiError> {
     return new GeminiError(kind, response.status, message, kind === 'rate-limit' ? parseRetryDelayMs(message) : undefined);
 }
 
-export async function testKey(key: string): Promise<boolean> {
+export interface KeyTestResult {
+    ok: boolean;
+    /** Provider's reason when the key cannot generate (never contains the key). */
+    detail?: string;
+}
+
+/**
+ * Runs a one-token text generation. Listing models is not enough: a key whose project
+ * Google has blocked still lists models but gets 403 on every generation.
+ */
+export async function testKey(key: string): Promise<KeyTestResult> {
     try {
-        const response = await fetch(`${API_BASE}/models?pageSize=1`, {
-            headers: { 'x-goog-api-key': key }
+        const response = await fetch(`${API_BASE}/models/${TRANSLATE_MODEL}:generateContent`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+            body: JSON.stringify({
+                contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
+                generationConfig: { maxOutputTokens: 1 }
+            })
         });
-        return response.ok;
+        if (response.ok) return { ok: true };
+        const error = await toError(response);
+        // A rate-limited key is still a working key.
+        if (error.kind === 'rate-limit') return { ok: true, detail: error.message };
+        return { ok: false, detail: error.message };
     } catch {
-        return false;
+        return { ok: false, detail: 'Network error' };
     }
 }
 
