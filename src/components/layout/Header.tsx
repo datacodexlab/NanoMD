@@ -203,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({ hasContent = false }) => {
 
     const getThemeLabel = (t: string) => {
         const labels: Record<string, string> = {
-            noir: 'أسود (Noir)',
+            noir: 'داكن (Noir)',
             slate: 'رمادي (Slate)',
             cream: 'كريمي (Cream)',
         };

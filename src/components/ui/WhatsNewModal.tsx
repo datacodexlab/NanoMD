@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Sparkles, Wand2, ShieldCheck, Zap, Globe, History, Smartphone, Share2 } from 'lucide-react';
+import { X, Sparkles, Wand2, ShieldCheck, Zap, Globe, History, Smartphone, Share2, Palette, Copy } from 'lucide-react';
 
 interface WhatsNewModalProps {
     isOpen: boolean;
@@ -9,8 +9,25 @@ interface WhatsNewModalProps {
 
 const updates = [
     {
-        version: 'v1.8.3',
+        version: 'v1.9.0',
         isLatest: true,
+        title: 'ثيمات أريح للقراءة',
+        items: [
+            {
+                icon: <Palette className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />,
+                title: 'ثيم رمادي فاتح وثيم داكن ناعم',
+                desc: 'الرمادي (Slate) بقى فاتح وهادي، والداكن (Noir) بقى فحمي بدل الأسود الصريح. الاتنين بخط أصغر وكثافة أعلى وجداول بحدود واضحة.',
+            },
+            {
+                icon: <Copy className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />,
+                title: 'زرار النسخ جوه بلوك الكود',
+                desc: 'أيقونة النسخ بقت في الركن العلوي جوه البلوك نفسه وظاهرة دايماً، بدل الشريط المنفصل اللي فوقه.',
+            },
+        ],
+    },
+    {
+        version: 'v1.8.3',
+        isLatest: false,
         title: 'ترجمة أسرع بكتير',
         items: [
             {

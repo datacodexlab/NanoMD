@@ -13,7 +13,7 @@ const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 const THEMES: Theme[] = ['noir', 'slate', 'cream'];
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-    const [theme, setTheme] = useLocalStorage<Theme>('nanomd_theme', 'cream');
+    const [theme, setTheme] = useLocalStorage<Theme>('nanomd_theme', 'slate');
 
     useEffect(() => {
         const root = window.document.documentElement;

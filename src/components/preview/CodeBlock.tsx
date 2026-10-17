@@ -41,31 +41,17 @@ export const CodeBlock = ({ className, children }: CodeBlockProps) => {
     return <code className={className}>{children}</code>;
   }
 
-  const displayLang = language || 'text';
-
   return (
-    <div className="code-block-wrapper">
-      <div className="code-block-header" dir="ltr">
-        <span className="code-lang">{displayLang}</span>
-        <button
-          onClick={handleCopy}
-          className="copy-btn"
-          type="button"
-          aria-label={copied ? 'Copied' : 'Copy code'}
-        >
-          {copied ? (
-            <>
-              <Check size={12} />
-              <span>Copied</span>
-            </>
-          ) : (
-            <>
-              <Copy size={12} />
-              <span>Copy</span>
-            </>
-          )}
-        </button>
-      </div>
+    <div className="code-block-wrapper" data-lang={language || undefined}>
+      <button
+        onClick={handleCopy}
+        className={copied ? 'code-copy-btn copied' : 'code-copy-btn'}
+        type="button"
+        aria-label={copied ? 'Copied' : 'Copy code'}
+        title={copied ? 'Copied' : 'Copy code'}
+      >
+        {copied ? <Check size={15} /> : <Copy size={15} />}
+      </button>
       <pre dir={detectCodeDir(codeString)}>
         <code className={className}>
           {children}

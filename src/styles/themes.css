@@ -1,6 +1,6 @@
 /* ============================================
    NanoMD Theme System - Manus Premium Style
-   Themes: Noir, Slate, Cream
+   Themes: Noir (soft charcoal), Slate (light gray), Cream
    ============================================ */
 
 /* -------- Root / Cream Theme (Default) -------- */
@@ -56,21 +56,21 @@
     --toast-text: #FAF9F6;
 }
 
-/* -------- Noir Theme (Pure Black) -------- */
+/* -------- Noir Theme (Soft Charcoal, Dense Reading) -------- */
 :root[data-theme="noir"] {
-    --bg-primary: #000000;
-    --bg-secondary: #0A0A0A;
-    --bg-tertiary: #141414;
-    --bg-elevated: #1a1a1a;
+    --bg-primary: #1E1E1E;
+    --bg-secondary: #252526;
+    --bg-tertiary: #363636;
+    --bg-elevated: #2A2A2A;
 
-    --text-primary: #FFFFFF;
-    --text-secondary: #a0a09f;
-    --text-tertiary: #666666;
-    --text-muted: #52525B;
+    --text-primary: #D4D4D4;
+    --text-secondary: #B0B0B0;
+    --text-tertiary: #8A8A8A;
+    --text-muted: #9D9D9D;
 
-    --border-default: #27272A;
-    --border-subtle: #1a1a1a;
-    --border-hover: #3F3F46;
+    --border-default: #3C3C3C;
+    --border-subtle: #303030;
+    --border-hover: #4A4A4A;
 
     --accent-primary: #3B82F6;
     --accent-primary-hover: #60A5FA;
@@ -79,83 +79,85 @@
     --accent-danger: #EF4444;
 
     /* Manus Style Variables */
-    --bg-elevated: #1a1a1a;
-    --border-color: #333333;
-    --accent-hover: #60a5fa;
-    --code-bg: #111111;
-    --code-border: #222222;
-    --link-color: #60a5fa;
-    --link-hover: #93c5fd;
-    --hover-bg: rgba(255, 255, 255, 0.03);
+    --border-color: #3C3C3C;
+    --accent-hover: #60A5FA;
+    --code-bg: #2D2D2D;
+    --code-border: #3C3C3C;
+    --link-color: #4FA3F7;
+    --link-hover: #7DBBF9;
+    --hover-bg: rgba(255, 255, 255, 0.04);
+    --inline-code-color: #E06C75;
+    --inline-code-hover-bg: #383838;
 
-    --preview-bg: #000000;
-    --preview-code-bg: #050505;
-    --preview-blockquote-bg: #050505;
-    --preview-blockquote-border: #333333;
-    --preview-table-header-bg: transparent;
-    --preview-table-border: #333333;
+    --preview-bg: #1E1E1E;
+    --preview-code-bg: #2D2D2D;
+    --preview-blockquote-bg: #252526;
+    --preview-blockquote-border: #3C3C3C;
+    --preview-table-header-bg: #2A2A2A;
+    --preview-table-border: #3C3C3C;
     --preview-table-row-alt: transparent;
-    --preview-link: #60A5FA;
-    --preview-heading: #FFFFFF;
+    --preview-link: #4FA3F7;
+    --preview-heading: #E8E8E8;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.6);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.7);
-
-    --focus-bg: #000000;
-    --drawer-bg: #0A0A0A;
-    --toast-bg: #FFFFFF;
-    --toast-text: #000000;
-}
-
-/* -------- Slate Theme -------- */
-:root[data-theme="slate"] {
-    --bg-primary: #0F172A;
-    --bg-secondary: #1E293B;
-    --bg-tertiary: #334155;
-    --bg-elevated: #475569;
-
-    --text-primary: #F1F5F9;
-    --text-secondary: #94A3B8;
-    --text-tertiary: #64748B;
-    --text-muted: #475569;
-
-    --border-default: #334155;
-    --border-subtle: #1e293b;
-    --border-hover: #475569;
-
-    --accent-primary: #38BDF8;
-    --accent-primary-hover: #7DD3FC;
-    --accent-secondary: #818CF8;
-    --accent-success: #34D399;
-    --accent-danger: #F87171;
-
-    /* Manus Style Variables */
-    --bg-elevated: #faf8f5;
-    --border-color: #e0d5c5;
-    --accent-hover: #d97706;
-    --code-bg: #f0e8dc;
-    --code-border: #e0d5c5;
-    --link-color: #b45309;
-    --link-hover: #92400e;
-    --hover-bg: rgba(0, 0, 0, 0.02);
-
-    --preview-bg: #0F172A;
-    --preview-code-bg: #1E293B;
-    --preview-blockquote-bg: #1E293B;
-    --preview-blockquote-border: #334155;
-    --preview-table-header-bg: transparent;
-    --preview-table-border: #334155;
-    --preview-table-row-alt: transparent;
-    --preview-link: #38BDF8;
-    --preview-heading: #F1F5F9;
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.45);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
 
-    --focus-bg: #0F172A;
-    --drawer-bg: #1E293B;
-    --toast-bg: #F1F5F9;
-    --toast-text: #0F172A;
+    --focus-bg: #1E1E1E;
+    --drawer-bg: #252526;
+    --toast-bg: #E8E8E8;
+    --toast-text: #1E1E1E;
+}
+
+/* -------- Slate Theme (Light Gray, Dense Reading) -------- */
+:root[data-theme="slate"] {
+    --bg-primary: #F4F4F3;
+    --bg-secondary: #ECECEA;
+    --bg-tertiary: #E3E3E0;
+    --bg-elevated: #FAFAF9;
+
+    --text-primary: #3B3B3B;
+    --text-secondary: #5C5C5C;
+    --text-tertiary: #8A8A8A;
+    --text-muted: #9A9A9A;
+
+    --border-default: #D6D6D3;
+    --border-subtle: #E6E6E3;
+    --border-hover: #BDBDB9;
+
+    --accent-primary: #3B82F6;
+    --accent-primary-hover: #2563EB;
+    --accent-secondary: #60A5FA;
+    --accent-success: #10B981;
+    --accent-danger: #EF4444;
+
+    /* Manus Style Variables */
+    --border-color: #D6D6D3;
+    --accent-hover: #2563EB;
+    --code-bg: #E9E9E6;
+    --code-border: transparent;
+    --link-color: #2563EB;
+    --link-hover: #1D4ED8;
+    --hover-bg: rgba(0, 0, 0, 0.03);
+    --inline-code-color: #C7254E;
+    --inline-code-hover-bg: #DCDCD8;
+
+    --preview-bg: #F4F4F3;
+    --preview-code-bg: #ECECEA;
+    --preview-blockquote-bg: #ECECEA;
+    --preview-blockquote-border: #CFCFCB;
+    --preview-table-header-bg: #E9E9E6;
+    --preview-table-border: #CFCFCB;
+    --preview-table-row-alt: transparent;
+    --preview-link: #2563EB;
+    --preview-heading: #262626;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.08);
+
+    --focus-bg: #F4F4F3;
+    --drawer-bg: #ECECEA;
+    --toast-bg: #2D3748;
+    --toast-text: #F4F4F3;
 }

@@ -272,48 +272,47 @@
     text-align: start;
 }
 
-/* Code Block Header (Manus Style) */
+/* Code Block Copy Button: always visible, pinned to the top-right corner inside the block */
 .code-block-wrapper {
     position: relative;
     margin: 2rem 0;
 }
 
-.code-block-header {
+.code-block-wrapper pre {
+    margin: 0;
+}
+
+/* Reserve room under the button so the first line never sits beneath it */
+.code-block-wrapper pre code {
+    padding-right: 44px;
+}
+
+.code-copy-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 1;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 8px 16px;
-    background: var(--bg-tertiary);
-    border-bottom: 1px solid var(--code-border);
-    font-size: var(--text-xs);
-    color: var(--text-tertiary);
-    font-family: var(--font-mono);
-    direction: ltr;
-}
-
-.code-block-header .code-lang {
-    font-weight: 500;
-    text-transform: lowercase;
-}
-
-.code-block-header .copy-btn {
-    cursor: pointer;
-    color: var(--text-tertiary);
-    transition: color 0.2s ease;
-    background: none;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
     border: none;
-    font-size: var(--text-xs);
-    font-family: var(--font-arabic);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
 }
 
-.code-block-header .copy-btn:hover {
+.code-copy-btn:hover {
     color: var(--text-primary);
-    background: var(--hover-bg);
+    background: var(--bg-tertiary);
+}
+
+.code-copy-btn.copied {
+    color: var(--accent-success);
 }
 
 /* Scrollbar Styling */
@@ -842,4 +841,131 @@
     .review-separator-cell {
         color: black !important;
     }
-}
+}
+
+/* ============================================
+   Dense Reading Overrides (Slate + Noir)
+   Scoped to slate and noir only; no direction/text-align/unicode-bidi here.
+   ============================================ */
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content {
+    font-family: "Segoe UI", Tahoma, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 1.25rem 1.5rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content p {
+    margin-bottom: 0.75rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h1,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h2,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h3,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h4,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h5,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h6 {
+    font-family: "Segoe UI", Tahoma, system-ui, sans-serif;
+    margin-top: 1.5rem;
+    margin-bottom: 0.6rem;
+    letter-spacing: normal;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h1:first-child {
+    margin-top: 0;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h1 {
+    font-size: 1.5rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h2 {
+    font-size: 1.25rem;
+    padding-bottom: 0.3rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h3 {
+    font-size: 1.1rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h4,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h5,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content h6 {
+    font-size: 1rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content ul,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content ol {
+    margin-bottom: 0.75rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content li {
+    margin-bottom: 0.25rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content li > ul,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content li > ol {
+    margin-top: 0.25rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content ul {
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content ul > li::before {
+    content: none;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content ul > li.task-list-item {
+    list-style: none;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content table {
+    margin: 1rem 0;
+    font-size: 13px;
+    border: 1px solid var(--preview-table-border);
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content th,
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content td {
+    border: 1px solid var(--preview-table-border);
+    padding: 6px 10px;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content th {
+    background: var(--preview-table-header-bg);
+    font-weight: 600;
+    font-family: "Segoe UI", Tahoma, system-ui, sans-serif;
+    color: var(--text-primary);
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content tr:last-child td {
+    border-bottom: 1px solid var(--preview-table-border);
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content code:not(pre code) {
+    color: var(--inline-code-color);
+    background: var(--code-bg);
+    border: none;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+/* Keep the click-to-copy hover hint visible (the rule above outranks .inline-code-wrapper:hover) */
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content .inline-code-wrapper:hover code {
+    background: var(--inline-code-hover-bg);
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content blockquote {
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content .code-block-wrapper {
+    margin: 1rem 0;
+}
+
+:root:is([data-theme="slate"], [data-theme="noir"]) .preview-content hr {
+    margin: 1.5rem 0;
+}
