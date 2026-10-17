@@ -9,8 +9,20 @@ interface WhatsNewModalProps {
 
 const updates = [
     {
-        version: 'v1.9.0',
+        version: 'v1.9.1',
         isLatest: true,
+        title: 'بداية قراءة أريح',
+        items: [
+            {
+                icon: <Sparkles className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />,
+                title: 'مسافة تحت الهيدر',
+                desc: 'في الثيم الرمادي والداكن، أول سطر في النص بقى بعيد عن الهيدر بمسافة مريحة بدل ما يكون لازق فيه.',
+            },
+        ],
+    },
+    {
+        version: 'v1.9.0',
+        isLatest: false,
         title: 'ثيمات أريح للقراءة',
         items: [
             {

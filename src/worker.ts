@@ -1,5 +1,5 @@
 import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
-// @ts-ignore
+// @ts-expect-error -- virtual module injected by Wrangler at build time
 import manifestJSON from "__STATIC_CONTENT_MANIFEST";
 
 const assetManifest = JSON.parse(manifestJSON);
@@ -112,7 +112,7 @@ export default {
                     status: 200,
                     headers: { "Content-Type": "application/json" }
                 });
-            } catch (e) {
+            } catch {
                 return new Response(JSON.stringify({ error: "Invalid request" }), {
                     status: 400,
                     headers: { "Content-Type": "application/json" }
@@ -170,13 +170,13 @@ export default {
                         status: 200,
                         headers: { "Content-Type": "application/json" }
                     });
-                } catch (aiError) {
+                } catch {
                     return new Response(JSON.stringify({ error: "حدث خطأ في خدمة الترجمة. الحصة اليومية قد تكون انتهت أو الخدمة غير متاحة مؤقتاً." }), {
                         status: 503,
                         headers: { "Content-Type": "application/json" }
                     });
                 }
-            } catch (e) {
+            } catch {
                 return new Response(JSON.stringify({ error: "طلب غير صالح" }), {
                     status: 400,
                     headers: { "Content-Type": "application/json" }
@@ -207,7 +207,7 @@ export default {
                     status: 200,
                     headers: { "Content-Type": "application/json" }
                 });
-            } catch (e) {
+            } catch {
                 return new Response(JSON.stringify({ error: "Server error" }), {
                     status: 500,
                     headers: { "Content-Type": "application/json" }
@@ -226,7 +226,7 @@ export default {
                     ASSET_MANIFEST: assetManifest,
                 }
             );
-        } catch (e) {
+        } catch {
             // If asset not found, serve index.html for SPA routing
             try {
                 const notFoundResponse = await getAssetFromKV(

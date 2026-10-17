@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { CheckCircle2, XCircle, AlertTriangle, Info } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -56,11 +56,17 @@ export const Toast: React.FC<ToastProps> = ({
     duration = 5000,
     action,
 }) => {
+    // Keep the latest onClose without restarting the timer when the parent re-renders
+    const onCloseRef = useRef(onClose);
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
+
     useEffect(() => {
         if (!isVisible) return;
-        const timer = setTimeout(onClose, duration);
+        const timer = setTimeout(() => onCloseRef.current(), duration);
         return () => clearTimeout(timer);
-    }, [isVisible]);
+    }, [isVisible, duration]);
 
     if (!isVisible) return null;
 

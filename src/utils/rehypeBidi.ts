@@ -190,7 +190,7 @@ const NESTED_BLOCK_TAGS: ReadonlySet<string> = new Set([
 ]);
 
 // Same Arabic ranges as CodeBlock detectCodeDir
-const ARABIC_RE = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
+const ARABIC_RE = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
 const LATIN_RE = /[A-Za-z]/;
 
 function collectText(nodes: ElementContent[]): string {

@@ -8,8 +8,8 @@ interface CodeBlockProps {
 }
 
 // Arabic Unicode ranges: Arabic, Arabic Supplement, Arabic Extended-A, Presentation Forms-A/B
-const ARABIC_RE = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
-const STRONG_CHAR_RE = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿A-Za-z]/;
+const ARABIC_RE = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+const STRONG_CHAR_RE = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFFA-Za-z]/;
 
 function detectCodeDir(code: string): 'rtl' | 'ltr' {
     const match = code.match(STRONG_CHAR_RE);

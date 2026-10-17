@@ -851,7 +851,8 @@
     font-family: "Segoe UI", Tahoma, system-ui, sans-serif;
     font-size: 14px;
     line-height: 1.6;
-    padding: 1.25rem 1.5rem;
+    /* Roughly two lines of breathing room under the sticky header */
+    padding: 2.75rem 1.5rem 1.25rem;
 }
 
 :root:is([data-theme="slate"], [data-theme="noir"]) .preview-content p {

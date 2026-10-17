@@ -1,5 +1,17 @@
 # 📝 سجل التغييرات (Changelog) - NanoMD
 
+## [v1.9.1] - 2026-10-17
+
+### تغيّر (Changed)
+- **مسافة تحت الهيدر:** في Slate وNoir بداية النص بقت تحت الهيدر بمسافة حوالي سطرين (`padding-top: 2.75rem`) بدل ما يكون لازق فيه.
+
+### أُصلح (Fixed)
+- **`npm run lint` رجع يشتغل:** أُضيف `eslint.config.js` (flat config لـ ESLint 9) بالإضافات المتسطّبة أصلاً. النتيجة: 0 أخطاء.
+- **Toast:** الإشعار بياخد آخر `onClose` من غير ما التايمر يتصفّر مع كل إعادة رسم (`useRef`)، و`duration` بقى في الـdependencies.
+- **Regex العربي** في `CodeBlock.tsx` و`rehypeBidi.ts` بقى مكتوب بـ unicode escapes بدل رموز Unicode خام (نفس السلوك).
+- **`worker.ts`:** `@ts-ignore` بقى `@ts-expect-error` مع السبب، وشيل متغيرات `catch` مش مستخدمة.
+- `no-explicit-any` بقى تحذير مؤقتاً (15 موضع) لحد جولة تحديد أنواع لوحدها.
+
 ## [v1.9.0] - 2026-10-17
 
 ### تغيّر (Changed)
