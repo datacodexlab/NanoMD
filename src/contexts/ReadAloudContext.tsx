@@ -16,6 +16,8 @@ export interface ReadAloudContextType {
     error: ReadAloudError;
     /** Epoch ms when a key/model becomes available again; set only when error === 'quota'. */
     quotaRetryAt: number | null;
+    /** Provider's reason for the last error (never contains the key), for diagnosis. */
+    errorDetail: string | null;
     blockIndex: number;
     blockCount: number;
     hasKey: boolean;
@@ -132,6 +134,7 @@ export const ReadAloudProvider: React.FC<{ children: ReactNode }> = ({ children 
     const [status, setStatus] = useState<ReadAloudStatus>('idle');
     const [error, setError] = useState<ReadAloudError>(null);
     const [quotaRetryAt, setQuotaRetryAt] = useState<number | null>(null);
+    const [errorDetail, setErrorDetail] = useState<string | null>(null);
     const [blockIndex, setBlockIndex] = useState(-1);
     const [blockCount, setBlockCount] = useState(0);
     const [hasKey, setHasKey] = useState(() => getKeys('gemini').length > 0);
@@ -223,6 +226,8 @@ export const ReadAloudProvider: React.FC<{ children: ReactNode }> = ({ children 
         resetToIdle();
         const mapped = mapError(err);
         setError(mapped);
+        setErrorDetail(err instanceof Error && err.message ? err.message : null);
+        if (mapped !== 'quota') console.warn('Read aloud failed:', mapped, err instanceof Error ? err.message : err);
         setQuotaRetryAt(mapped === 'quota' ? getQuotaRetryAt() : null);
         setStatus('error');
     }, [halt, resetToIdle]);
@@ -468,9 +473,9 @@ export const ReadAloudProvider: React.FC<{ children: ReactNode }> = ({ children 
     }, [appState.content, stop]);
 
     const value = useMemo<ReadAloudContextType>(() => ({
-        status, error, quotaRetryAt, blockIndex, blockCount, hasKey, cachedBytes, clearAudioCache,
+        status, error, quotaRetryAt, errorDetail, blockIndex, blockCount, hasKey, cachedBytes, clearAudioCache,
         speed, setSpeed, play, pause, stop, next, prev, seekToBlock
-    }), [status, error, quotaRetryAt, blockIndex, blockCount, hasKey, cachedBytes, clearAudioCache, speed, setSpeed, play, pause, stop, next, prev, seekToBlock]);
+    }), [status, error, quotaRetryAt, errorDetail, blockIndex, blockCount, hasKey, cachedBytes, clearAudioCache, speed, setSpeed, play, pause, stop, next, prev, seekToBlock]);
 
     return <ReadAloudContext.Provider value={value}>{children}</ReadAloudContext.Provider>;
 };

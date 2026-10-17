@@ -67,10 +67,10 @@ function toTypedError(err: GeminiError): Error {
     return err;
 }
 
-function finalError(sawRateLimit: boolean): Error {
+function finalError(sawRateLimit: boolean, lastDetail = ''): Error {
     return sawRateLimit
-        ? new QuotaExhaustedError('Quota exhausted for all keys')
-        : new InvalidKeyError('All keys were rejected');
+        ? new QuotaExhaustedError(lastDetail || 'Quota exhausted for all keys')
+        : new InvalidKeyError(lastDetail || 'All keys were rejected');
 }
 
 export async function* speakWithFallback(
@@ -82,6 +82,8 @@ export async function* speakWithFallback(
 
     const style = buildStyle();
     let sawRateLimit = false;
+    // Google's own reason for the last rejection, surfaced to the UI for diagnosis.
+    let lastDetail = '';
 
     for (const stored of keys) {
         for (const model of TTS_MODELS) {
@@ -112,12 +114,15 @@ export async function* speakWithFallback(
                     markRateLimited(stored.id, model, err.retryAfterMs);
                     continue; // next model with the same key
                 }
-                if (err.kind === 'invalid-key') break; // next key
+                if (err.kind === 'invalid-key') {
+                    lastDetail = err.message;
+                    break; // next key
+                }
                 throw err;
             }
         }
     }
-    throw finalError(sawRateLimit);
+    throw finalError(sawRateLimit, lastDetail);
 }
 
 export async function translateWithFallback(

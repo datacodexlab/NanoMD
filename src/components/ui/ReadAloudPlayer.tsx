@@ -5,7 +5,7 @@ import { PLAYBACK_SPEEDS } from '../../lib/ai/types';
 import { openAiSettings } from './AiSettingsModal';
 
 export function ReadAloudPlayer() {
-    const { status, error, quotaRetryAt, blockIndex, blockCount, speed, setSpeed, play, pause, stop, next, prev, seekToBlock } = useReadAloud();
+    const { status, error, quotaRetryAt, errorDetail, blockIndex, blockCount, speed, setSpeed, play, pause, stop, next, prev, seekToBlock } = useReadAloud();
     const openedForNoKey = useRef(false);
 
     useEffect(() => {
@@ -31,6 +31,8 @@ export function ReadAloudPlayer() {
         const time = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
         message += ` (متاحة تاني حوالي الساعة ${time})`;
     }
+    // Show Google's reason for key and network failures so the user can see what went wrong.
+    const detail = error === 'invalid-key' || error === 'network' ? errorDetail : null;
     const buttonClass = 'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg hover:bg-[var(--bg-tertiary)] disabled:opacity-40';
     const currentBlock = Math.min(Math.max(blockIndex + 1, 0), blockCount);
     const hasSettingsLink = error === 'quota' || error === 'invalid-key';
@@ -40,13 +42,14 @@ export function ReadAloudPlayer() {
         <div className="sticky top-0 z-30 shrink-0 border-b print:hidden" dir="rtl"
             style={{ background: 'var(--bg-primary)', borderColor: 'var(--border-default)', color: 'var(--text-primary)' }}>
             <div role="region" aria-label="مشغل القراءة الصوتية" className="mx-auto flex h-12 w-full max-w-3xl items-center gap-1 px-2 sm:gap-2 sm:px-4">
-                {status === 'error' ? <p role="alert" title={message} className="flex min-w-0 flex-1 items-center gap-0.5 whitespace-nowrap text-xs">
+                {status === 'error' ? <p role="alert" title={detail ? `${message} — ${detail}` : message} className="flex min-w-0 flex-1 items-center gap-0.5 whitespace-nowrap text-xs">
                     {hasSettingsLink ? <>
                         <span className="min-w-0 truncate">{beforeSettings}</span>
                         <a href="#ai-settings" className="shrink-0 underline underline-offset-2" style={{ color: 'var(--accent-primary)' }}
                             onClick={event => { event.preventDefault(); openAiSettings(); }}>الإعدادات</a>
                         <span className="max-w-[45%] truncate">{afterSettings}</span>
                     </> : <span className="truncate">{message}</span>}
+                    {detail && <span className="min-w-0 truncate opacity-70" dir="ltr">· {detail}</span>}
                 </p> : <>
                     <button className={buttonClass} title="الفقرة اللي فاتت" aria-label="الفقرة اللي فاتت" disabled={!blockCount} onClick={prev}><SkipBack size={20} /></button>
                     <button className={`${buttonClass} text-white`} style={{ background: 'var(--accent-primary)' }} title={status === 'playing' ? 'إيقاف مؤقت' : 'تشغيل'} aria-label={status === 'playing' ? 'إيقاف مؤقت' : 'تشغيل'} disabled={status === 'loading'} onClick={status === 'playing' ? pause : play}>
