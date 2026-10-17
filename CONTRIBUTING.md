@@ -29,7 +29,7 @@ npm run dev
 | `src/components/ui/` | مكونات مشتركة — أزرار، مودالات، إلخ |
 | `src/contexts/` | إدارة الحالة العامة والترجمة |
 | `src/hooks/` | Custom Hooks |
-| `src/worker.ts` | Cloudflare Worker — KV sharing & Workers AI translation |
+| `functions/api/` | Cloudflare Pages Functions — المشاركة (KV) والترجمة (Workers AI) |
 
 ## إرسال تغييراتك
 
@@ -41,7 +41,7 @@ npm run dev
 
 - التطبيق **عربي أولاً (RTL-first)** — اختبر أي تغيير بمحتوى عربي وإنجليزي
 - الـ Inline styles مستخدمة بدلاً من Tailwind في المكونات المعتمدة على CSS Variables للثيم
-- الـ `src/worker.ts` يشتغل على Cloudflare Workers — التعديلات تحتاج Cloudflare account للـ deploy
+- الـ backend في `functions/api/` (Cloudflare Pages Functions) — للتجربة محلياً بالـ KV والـ AI استخدم `npx wrangler pages dev`
 
 ## الإبلاغ عن مشكلة
 

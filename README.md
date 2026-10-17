@@ -72,7 +72,7 @@ NanoMD is an Arabic-first Markdown editor that instantly renders AI-generated te
 | Frontend | React 18, TypeScript, Vite |
 | Styling | Tailwind CSS, CSS Variables, PostCSS |
 | Markdown | react-markdown, remark-gfm, rehype-highlight, rehype-sanitize |
-| Backend | Cloudflare Workers (KV Storage + Workers AI) |
+| Backend | Cloudflare Pages Functions (KV Storage + Workers AI) |
 | Icons | Lucide React |
 | Font | Google Fonts — Cairo |
 
@@ -91,7 +91,7 @@ npm run build
 
 ### Deployment
 
-The app runs on Cloudflare Workers. See `scripts/deploy.bat` for deployment commands, and refer to the [Cloudflare Workers documentation](https://developers.cloudflare.com/workers/) for setup.
+The app runs on Cloudflare Pages: the static build in `dist/` plus Pages Functions in `functions/api/`. Every push to `main` triggers a Pages build. See the [Cloudflare Pages documentation](https://developers.cloudflare.com/pages/) for setup.
 
 ### Contributing
 

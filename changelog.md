@@ -1,5 +1,14 @@
 # 📝 سجل التغييرات (Changelog) - NanoMD
 
+## [v1.9.2] - 2026-10-17
+
+### أُزيل (Removed)
+- **`src/worker.ts`:** كود Worker قديم ما بيتنشرش من التحويل لـ Pages Functions (2026-05-12). الـbackend الحقيقي في `functions/api/`.
+- مكتبة `@cloudflare/kv-asset-handler` (كان بيستخدمها `worker.ts` بس)، واستثناؤه من `tsconfig.app.json`.
+
+### تغيّر (Changed)
+- `CONTRIBUTING.md` و`README.md` بقوا بيشيروا لـ `functions/api/` وCloudflare Pages بدل Workers.
+
 ## [v1.9.1] - 2026-10-17
 
 ### تغيّر (Changed)
